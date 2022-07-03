@@ -34,18 +34,34 @@ def _cast_to_type(s):
         except ValueError:
             return s
 
+def _process_str(v):
+    m = re.match('(.*?)\${(\w+)\:-(\w+)}(.*)', v)
+    if m:
+        env_name = m.group(2)
+        def_val = m.group(3)
+        env_val = os.environ.get(env_name)
+        if env_val is None:
+            env_val = _cast_to_type(def_val)
+        return m.group(1) + env_val + m.group(4) 
+    return v
+
+def _process_list(v):
+    for index, item in enumerate(v):
+        if isinstance(item, dict):
+            substitude_env_vars(item)
+        elif isinstance(item, list):
+            v[index] = _process_list(item)
+        elif isinstance(item, str):
+            v[index] = _process_str(item)
+    return v
+
 def substitude_env_vars(d):
     for key in d.keys():
         v = d.get(key)
         if isinstance(v, str):
-            m = re.match('(.*?)\${(\w+)\:-(\w+)}(.*)', v)
-            if m:
-                env_name = m.group(2)
-                def_val = m.group(3)
-                env_val = os.environ.get(env_name)
-                if env_val is None:
-                    env_val = _cast_to_type(def_val)
-                d[key] = m.group(1) + env_val + m.group(4)
+            d[key] = _process_str(v)
+        elif isinstance(v, list):
+            d[key] = _process_list(v)
         elif isinstance(v, dict):
             substitude_env_vars(v)
 
