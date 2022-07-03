@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import re
 import argparse
 import json
 from pathlib import Path
@@ -13,16 +14,16 @@ parser.add_argument('--output-dir', action='store', type=str, required = True)
 
 args = parser.parse_args()
 
-config_path = Path(args.json-config)
+config_path = Path(args.json_config)
 
 if not config_path.exists():
-    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.json-config)
+    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.json_config)
 
-if not config_path.isfile():
+if not config_path.is_file():
     raise Exception("Specified json config is not a file")
 
 config_filename = config_path.name
-output_file = args.output-dir + "/" + config_filename
+output_file = args.output_dir + "/" + config_filename
 
 def _cast_to_type(s):
     try:
@@ -52,6 +53,6 @@ with open(config_path, 'r+') as config_f:
     json_config = json.load(config_f)
     substitude_env_vars(json_config)
     with open(output_file, 'w+') as output_f:
-        output_f.write(json_config)
+        json.dump(json_config, output_f)
 
 

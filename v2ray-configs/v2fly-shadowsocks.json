@@ -17,11 +17,11 @@
     "inbounds": [
         {
             "listen": "0.0.0.0",
-            "port": "${SERVER_PORT}",
+            "port": "${SERVER_PORT:-8388}",
             "protocol": "shadowsocks",
             "settings": {
                 "method": "chacha20-ietf-poly1305",
-                "password": "${PASSWORD}"
+                "password": "${PASSWORD:-strongpassword}"
             },
             "streamSettings": {
                 "network": "tcp"

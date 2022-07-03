@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+mkdir -p build-configs
+
 for i in "$@"; do
   IFS=$'\n'
   files=($(find "$i" -type f))

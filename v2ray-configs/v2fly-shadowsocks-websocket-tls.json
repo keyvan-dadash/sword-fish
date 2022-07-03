@@ -17,15 +17,15 @@
     "inbounds": [
         {
             "listen": "127.0.0.1",
-            "port": "${V2FLY_PORT}",
+            "port": "${V2FLY_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
                 "method": "chacha20-ietf-poly1305",
-                "password": "${V2FLY_PASSWORD}"
+                "password": "${V2FLY_PASSWORD:-strongpassword}"
             },
             "streamSettings": {
                 "network": "ws",
-                "path": "${V2FLY_WEBSOCKET_PATH}"
+                "path": "${V2FLY_WEBSOCKET_PATH:-websocketpath}"
             }
         }
     ],
