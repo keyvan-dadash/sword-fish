@@ -38,14 +38,14 @@ def substitude_env_vars(d):
     for key in d.keys():
         v = d.get(key)
         if isinstance(v, str):
-            m = re.match('\${(\w+)\:-(\w+)}', v)
+            m = re.match('(.*?)\${(\w+)\:-(\w+)}(.*)', v)
             if m:
-                env_name = m.group(1)
-                def_val = m.group(2)
+                env_name = m.group(2)
+                def_val = m.group(3)
                 env_val = os.environ.get(env_name)
                 if env_val is None:
                     env_val = _cast_to_type(def_val)
-                d[key] = env_val
+                d[key] = m.group(1) + env_val + m.group(4)
         elif isinstance(v, dict):
             substitude_env_vars(v)
 
@@ -53,6 +53,5 @@ with open(config_path, 'r+') as config_f:
     json_config = json.load(config_f)
     substitude_env_vars(json_config)
     with open(output_file, 'w+') as output_f:
-        json.dump(json_config, output_f)
-
+        json.dump(json_config, output_f, indent=2)
 
