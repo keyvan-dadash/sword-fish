@@ -35,7 +35,6 @@ def _cast_to_type(s):
 
 def substitude_env_vars(d):
     for key in d.keys():
-
         v = d.get(key)
         if isinstance(v, str):
             m = re.match('\${(\w+)\:-(\w+)}', v)

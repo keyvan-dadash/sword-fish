@@ -8,7 +8,7 @@ services:
     ports:
       - 10826
     volumes:
-      - ./shadowsocks-configs/shadowsocks-simple-gateway.json:/config.json
+      - ./build-configs/shadowsocks-simple-gateway.json:/config.json
     restart: always
     command: ssserver
 
@@ -19,7 +19,7 @@ services:
     ports:
       - 14877
     volumes:
-      - ./shadowsocks-configs/shadowsocks-v2ray-plugin-gateway.json:/config.json
+      - ./build-configs/shadowsocks-v2ray-plugin-gateway.json:/config.json
     restart: always
     command: ssserver
 
@@ -30,7 +30,7 @@ services:
     ports:
       - 27544
     volumes:
-      - ./v2ray-configs/v2fly-shadowsocks.json:/etc/v2ray/config.json
+      - ./build-configs/v2fly-shadowsocks.json:/etc/v2ray/config.json
 
   v2fly-shadowsocks-websocket-tls-gateway:
     hostname: v2ray
@@ -39,7 +39,7 @@ services:
     port:
       - "10000:10000"
     volumes:
-      - ./v2ray-configs/v2fly-shadowsocks-websocket-tls.json:/etc/v2ray/config.json
+      - ./build-configs/v2fly-shadowsocks-websocket-tls.json:/etc/v2ray/config.json
 
   v2fly-shadowsocks-grpc-tls-gateway:
     hostname: v2ray
@@ -48,6 +48,6 @@ services:
     port:
       - "42777:42777"
     volumes:
-      - ./v2ray-configs/v2fly-shadowsocks-grpc-tls.json:/etc/v2ray/config.json
+      - ./build-configs/v2fly-shadowsocks-grpc-tls.json:/etc/v2ray/config.json
 
 
