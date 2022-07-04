@@ -3,7 +3,7 @@
     "server_port": "${SERVER_PORT:-8388}",
     "password": "${PASSWORD:-strongpassword}",
     "timeout": 8000,
-    "method":"chacha20-ietf-poly1305",
+    "method":"chacha20-ietf",
     "mode":"tcp_and_udp",
     "fast_open":true
 }
