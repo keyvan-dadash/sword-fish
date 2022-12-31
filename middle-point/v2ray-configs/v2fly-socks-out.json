@@ -1,0 +1,104 @@
+{
+    "log": {
+        "loglevel": "warning",
+        "access": "/var/log/v2ray/access.log",
+        "error": "/var/log/v2ray/error.log"
+    },
+    "inbounds": [
+        {
+            "listen": "127.0.0.1",
+            "port": "${V2FLY_SOCKS_PORT:-1234}",
+            "protocol": "socks",
+            "udp": true
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "trojan",
+            "tag": "O-trojan",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
+                        "port": 443,
+                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "tls",
+                "tlsSettings" : {
+                    "allowInsecure" : true,
+                    "serverName": "${SNI_NAME:-sniname}",
+                    "fingerprint": "chrome",
+                    "alpn": "h2,http/1.1"
+                }
+            }
+        },
+        {
+            "protocol": "shadowsocks",
+            "tag": "O-websocket",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
+                        "port": 443,
+                        "method": "chacha20-ietf-poly1305",
+                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "ws",
+                "security": "tls",
+                "wsSettings": {
+                    "path": "${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                }
+            }
+        },
+        {
+            "protocol": "shadowsocks",
+            "tag": "O-grpc",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
+                        "port": 443,
+                        "method": "chacha20-ietf-poly1305",
+                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "grpc",
+                "security": "tls",
+                "grpcSettings": {
+                    "serviceName": "${V2FLY_GRPC_SERVICE_NAME:-examplegrpcservicename}"
+                }
+            }
+        }
+    ],
+    "routing": {
+        "domainStrategy": "AsIs",
+        "balancers": [
+            {
+                "tag": "b1",
+                "selector": [
+                    "O-trojan",
+                    "O-websocket",
+                    "O-grpc"
+                ]
+            }
+        ],
+        "rules": [
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:private"
+                ],
+                "outboundTag": "block"
+            }
+        ]
+    }
+}

@@ -11,10 +11,21 @@ for i in "$@"; do
     filename=$(basename -- "$j")
     extension="${filename##*.}"
     filename="${filename%.*}"
-    echo "env-files/${filename}.env"
-    export $(grep -v '^#' "env-files/${filename}.env" | xargs)
-    ./env-filler.py --json-config "$j" --output-dir build-configs
-    unset $(grep -v '^#' "env-files/${filename}.env" | awk 'BEGIN { FS = "=" } ; { print $1 }')
+    echo "${i}-env/${filename}.env"
+    export $(grep -v '^#' "${i}-env/${filename}.env" | xargs)
+
+    if test -f "${i}-env/general-var.env"; then
+      export $(grep -v '^#' "${i}-env/general-var.env" | xargs)
+    fi
+
+    ./env-filler.py --json-config "$j" --output-dir build-configs 
+
+    unset $(grep -v '^#' "${i}-env/${filename}.env" | awk 'BEGIN { FS = "=" } ; { print $1 }')
+
+    if test -f "${i}-env/general-var.env"; then
+      unset $(grep -v '^#' "${i}-env/general-var.env" | awk 'BEGIN { FS = "=" } ; { print $1 }')
+    fi
+
   done
 done
 
