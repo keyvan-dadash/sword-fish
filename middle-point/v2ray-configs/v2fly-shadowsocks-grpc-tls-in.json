@@ -19,7 +19,7 @@
     "inbounds": [
         {
             "listen": "127.0.0.1",
-            "port": "${V2FLY_PORT:-10000}",
+            "port": "${V2FLY_GRPC_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
                 "method": "chacha20-ietf-poly1305",

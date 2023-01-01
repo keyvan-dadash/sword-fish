@@ -19,7 +19,7 @@
     "inbounds": [
         {
             "listen": "127.0.0.1",
-            "port": "${V2FLY_PORT:-10000}",
+            "port": "${V2FLY_WEBSOCKET_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
                 "method": "chacha20-ietf-poly1305",
@@ -30,7 +30,40 @@
                 "wsSettings":{
                   "path": "${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
-            }
+            },
+            "tag": "in-simple"
+        },
+        {
+            "listen": "127.0.0.1",
+            "port": "1${V2FLY_WEBSOCKET_PORT:-10000}",
+            "protocol": "shadowsocks",
+            "settings": {
+                "method": "chacha20-ietf-poly1305",
+                "password": "tor-${V2FLY_PASSWORD:-strongpassword}"
+            },
+            "streamSettings": {
+                "network": "ws",
+                "wsSettings":{
+                  "path": "tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                }
+            },
+            "tag": "in-tor"
+        },
+        {
+            "listen": "127.0.0.1",
+            "port": "2${V2FLY_WEBSOCKET_PORT:-10000}",
+            "protocol": "shadowsocks",
+            "settings": {
+                "method": "chacha20-ietf-poly1305",
+                "password": "vpn-${V2FLY_PASSWORD:-strongpassword}"
+            },
+            "streamSettings": {
+                "network": "ws",
+                "wsSettings":{
+                  "path": "vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                }
+            },
+            "tag": "in-vpn"
         }
     ],
     "outbounds": [
@@ -46,6 +79,32 @@
                 ]
             },
             "tag": "out"
+        },
+        {
+            "protocol": "socks",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "${V2FLY_OUTBOUND_ADDRESS:-out}",
+                        "port": "1${V2FLY_OUTBOUND_PORT:-1234}",
+                        "udp": true
+                    }
+                ]
+            },
+            "tag": "out-tor"
+        },
+        {
+            "protocol": "socks",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "${V2FLY_OUTBOUND_ADDRESS:-out}",
+                        "port": "2${V2FLY_OUTBOUND_PORT:-1234}",
+                        "udp": true
+                    }
+                ]
+            },
+            "tag": "out-vpn"
         }
     ],
     "routing": {
@@ -57,6 +116,18 @@
                     "geoip:private"
                 ],
                 "outboundTag": "block"
+            },
+            {
+              "inboundTag":["in-tor"],
+              "outboundTag":"out-tor"
+            },
+            {
+              "inboundTag":["in-vpn"],
+              "outboundTag":"out-vpn"
+            },
+            {
+              "inboundTag":["in-simple"],
+              "outboundTag":"out"
             }
         ]
     }

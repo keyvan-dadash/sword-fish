@@ -13,6 +13,7 @@ for i in "$@"; do
     extension="${filename##*.}"
     filename="${filename%.*}"
     echo "${i}-env/${filename}.env"
+    cat "${i}-env/${filename}.env" >> "./sword-fish-nginx.env"
     export $(grep -v '^#' "${i}-env/${filename}.env" | xargs)
 
     if test -f "${i}-env/general-var.env"; then
@@ -34,4 +35,9 @@ for i in "$@"; do
   done
 done
 
+sed -i '/^[[:space:]]*$/d' "./sword-fish-nginx.env"
+allvals=$(eval grep -v '^#' "./sword-fish-nginx.env" | awk -v ORS=" " 'BEGIN { FS = "=" } ; { print "${"$1"}" }')
+export $(grep -v '^#' "./sword-fish-nginx.env" | xargs)
+
+envsubst ''\'"$allvals"''\' < "./sword-fish-nginx.conf" > "./default.conf"
 
