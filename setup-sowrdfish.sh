@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 mkdir -p build-configs
+mkdir -p client-configs
 
 for i in "$@"; do
   IFS=$'\n'
@@ -19,6 +20,10 @@ for i in "$@"; do
     fi
 
     ./env-filler.py --json-config "$j" --output-dir build-configs 
+    echo "${i}-client/${filename}-client.json"
+    if test -f "${i}-client/${filename}-client.json"; then
+      ./env-filler.py --json-config "${i}-client/${filename}-client.json" --output-dir client-configs
+    fi
 
     unset $(grep -v '^#' "${i}-env/${filename}.env" | awk 'BEGIN { FS = "=" } ; { print $1 }')
 
