@@ -118,14 +118,17 @@
                 "outboundTag": "block"
             },
             {
+              "type": "field",
               "inboundTag":["in-tor"],
               "outboundTag":"out-tor"
             },
             {
+              "type": "field",
               "inboundTag":["in-vpn"],
               "outboundTag":"out-vpn"
             },
             {
+              "type": "field",
               "inboundTag":["in-simple"],
               "outboundTag":"out"
             }

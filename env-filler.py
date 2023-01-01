@@ -42,7 +42,13 @@ def _process_str(v):
         env_val = os.environ.get(env_name)
         if env_val is None:
             env_val = _cast_to_type(def_val)
-        return m.group(1) + env_val + m.group(4) 
+        result = m.group(1) + env_val + m.group(4)
+        result_without_qut = result.replace("\"", "")
+        try:
+            result = int(result_without_qut)
+        except:
+            pass
+        return result
     return v
 
 def _process_list(v):

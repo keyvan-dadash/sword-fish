@@ -81,7 +81,7 @@
                 "servers": [
                     {
                         "address": "tor-gateway",
-                        "port": "9050",
+                        "port": 9050,
                         "udp": true
                     }
                 ]
@@ -94,7 +94,7 @@
                 "servers": [
                     {
                         "address": "127.0.0.1",
-                        "port": "19050",
+                        "port": 19050,
                         "udp": true
                     }
                 ]
@@ -113,14 +113,17 @@
                 "outboundTag": "block"
             },
             {
+              "type": "field",
               "inboundTag":["in-tor"],
               "outboundTag":"out-tor"
             },
             {
+              "type": "field",
               "inboundTag":["in-vpn"],
               "outboundTag":"out-vpn"
             },
             {
+              "type": "field",
               "inboundTag":["in-simple"],
               "outboundTag":"direct"
             }

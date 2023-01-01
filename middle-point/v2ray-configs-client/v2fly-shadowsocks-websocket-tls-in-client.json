@@ -141,14 +141,17 @@
                 "outboundTag": "block"
             },
             {
+              "type": "field",
               "inboundTag":["in-tor"],
               "outboundTag":"proxy-tor"
             },
             {
+              "type": "field",
               "inboundTag":["in-vpn"],
               "outboundTag":"proxy-vpn"
             },
             {
+              "type": "field",
               "inboundTag":["in-simple"],
               "outboundTag":"proxy-simple"
             }

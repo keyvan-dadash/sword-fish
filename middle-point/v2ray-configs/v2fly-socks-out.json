@@ -157,10 +157,12 @@
                 "outboundTag": "block"
             },
             {
+              "type": "field",
               "inboundTag":["I-tor"],
               "outboundTag":"O-websocket-tor"
             },
             {
+              "type": "field",
               "inboundTag":["I-vpn"],
               "outboundTag":"O-websocket-vpn"
             }
