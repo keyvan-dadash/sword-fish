@@ -7,21 +7,21 @@
     "inbounds": [
         {
             "listen": "127.0.0.1",
-            "port": "${V2FLY_SOCKS_PORT:-1234}",
+            "port": "${V2FLY_OUTBOUND_PORT:-1234}",
             "protocol": "socks",
             "udp": true,
             "tag": "simple"
         },
         {
             "listen": "127.0.0.1",
-            "port": "1${V2FLY_SOCKS_PORT:-1234}",
+            "port": "1${V2FLY_OUTBOUND_PORT:-1234}",
             "protocol": "socks",
             "udp": true,
             "tag": "I-tor"
         },
         {
             "listen": "127.0.0.1",
-            "port": "2${V2FLY_SOCKS_PORT:-1234}",
+            "port": "2${V2FLY_OUTBOUND_PORT:-1234}",
             "protocol": "socks",
             "udp": true,
             "tag": "I-vpn"
