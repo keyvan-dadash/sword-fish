@@ -9,6 +9,7 @@ services:
       - 19822
     volumes:
       - ./build-configs/v2fly-shadowsocks-in.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   v2fly-shadowsocks-websocket-tls-gateway:
     hostname: v2ray
@@ -20,6 +21,7 @@ services:
       - "21333:21333"
     volumes:
       - ./build-configs/v2fly-shadowsocks-websocket-tls-in.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   v2fly-shadowsocks-grpc-tls-gateway:
     hostname: v2ray
@@ -29,6 +31,7 @@ services:
       - "10000:10000"
     volumes:
       - ./build-configs/v2fly-shadowsocks-grpc-tls-in.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   v2fly-trojan-gateway:
     hostname: v2ray
@@ -38,6 +41,7 @@ services:
       - 8433
     volumes:
       - ./build-configs/v2fly-trojan-in.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   v2fly-out-gateway:
     hostname: v2ray
@@ -47,6 +51,7 @@ services:
       - "1234:1234"
     volumes:
       - ./build-configs/v2fly-socks-out.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
 
 

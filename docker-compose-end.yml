@@ -9,6 +9,7 @@ services:
       - 19822
     volumes:
       - ./build-configs/v2fly-shadowsocks.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   v2fly-shadowsocks-websocket-tls-gateway:
     hostname: v2ray
@@ -20,6 +21,7 @@ services:
       - "21333:21333"
     volumes:
       - ./build-configs/v2fly-shadowsocks-websocket-tls.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   v2fly-shadowsocks-grpc-tls-gateway:
     hostname: v2ray
@@ -29,6 +31,7 @@ services:
       - "10000:10000"
     volumes:
       - ./build-configs/v2fly-shadowsocks-grpc-tls.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   v2fly-trojan-gateway:
     hostname: v2ray
@@ -38,10 +41,13 @@ services:
       - 8433
     volumes:
       - ./build-configs/v2fly-trojan.json:/etc/v2ray/config.json
+    command: "run -c /etc/v2ray/config.json"
 
   tor-gateway:
     hostname: tor
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.tor
     network_mode: bridge
     ports:
       - "9050:9050"

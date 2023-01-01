@@ -39,5 +39,5 @@ sed -i '/^[[:space:]]*$/d' "./sword-fish-nginx.env"
 allvals=$(eval grep -v '^#' "./sword-fish-nginx.env" | awk -v ORS=" " 'BEGIN { FS = "=" } ; { print "${"$1"}" }')
 export $(grep -v '^#' "./sword-fish-nginx.env" | xargs)
 
-envsubst ''\'"$allvals"''\' < "./sword-fish-nginx.conf" > "./default.conf"
+envsubst ''\'"$allvals"''\' < "./sword-fish-nginx.conf" > "./default"
 
