@@ -18,7 +18,7 @@
     },
     "inbounds": [
         {
-            "listen": "127.0.0.1",
+            "listen": "0.0.0.0",
             "port": "${V2FLY_WEBSOCKET_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
@@ -34,7 +34,7 @@
             "tag": "in-simple"
         },
         {
-            "listen": "127.0.0.1",
+            "listen": "0.0.0.0",
             "port": "1${V2FLY_WEBSOCKET_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
@@ -50,7 +50,7 @@
             "tag": "in-tor"
         },
         {
-            "listen": "127.0.0.1",
+            "listen": "0.0.0.0",
             "port": "2${V2FLY_WEBSOCKET_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
@@ -80,7 +80,7 @@
             "settings": {
                 "servers": [
                     {
-                        "address": "tor-gateway",
+                        "address": "${V2FLY_TOR_ADDRESS:-toraddress}",
                         "port": 9050,
                         "udp": true
                     }

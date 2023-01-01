@@ -91,7 +91,7 @@
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "tor-${V2FLY_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -112,7 +112,7 @@
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "vpn-${V2FLY_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -141,14 +141,17 @@
                 "outboundTag": "block"
             },
             {
+              "type": "field",
               "inboundTag":["in-tor"],
               "outboundTag":"proxy-tor"
             },
             {
+              "type": "field",
               "inboundTag":["in-vpn"],
               "outboundTag":"proxy-vpn"
             },
             {
+              "type": "field",
               "inboundTag":["in-simple"],
               "outboundTag":"proxy-simple"
             }
