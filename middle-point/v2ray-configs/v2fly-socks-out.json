@@ -36,7 +36,7 @@
                     {
                         "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
                         "port": 443,
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_TROJAN_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -47,7 +47,7 @@
                     "allowInsecure" : true,
                     "serverName": "${V2FLY_TROJAN_SNI_NAME:-sniname}",
                     "fingerprint": "chrome",
-                    "alpn": "h2,http/1.1"
+                    "alpn": "http/1.1"
                 }
             }
         },
@@ -60,7 +60,7 @@
                         "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_WEBSOCKET_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -81,7 +81,7 @@
                         "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_GRPC_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -102,7 +102,7 @@
                         "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "tor-${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "tor-${V2FLY_WEBSOCKET_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -123,7 +123,7 @@
                         "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "vpn-${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "vpn-${V2FLY_WEBSOCKET_PASSWORD:-strongpassword}"
                     }
                 ]
             },
