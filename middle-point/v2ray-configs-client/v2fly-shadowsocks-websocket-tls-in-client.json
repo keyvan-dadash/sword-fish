@@ -78,7 +78,7 @@
                 "network": "ws",
                 "security": "tls",
                 "wsSettings": {
-                    "path": "${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                    "path": "/${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "proxy-simple"
@@ -91,7 +91,7 @@
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "tor-${V2FLY_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -99,7 +99,7 @@
                 "network": "ws",
                 "security": "tls",
                 "wsSettings": {
-                    "path": "tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                    "path": "/tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "proxy-tor"
@@ -112,7 +112,7 @@
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "vpn-${V2FLY_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -120,7 +120,7 @@
                 "network": "ws",
                 "security": "tls",
                 "wsSettings": {
-                    "path": "vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                    "path": "/vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "proxy-vpn"

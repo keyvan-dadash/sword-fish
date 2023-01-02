@@ -28,7 +28,7 @@
             "streamSettings": {
                 "network": "ws",
                 "wsSettings":{
-                  "path": "${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                  "path": "/${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "in-simple"
@@ -44,7 +44,7 @@
             "streamSettings": {
                 "network": "ws",
                 "wsSettings":{
-                  "path": "tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                  "path": "/tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "in-tor"
@@ -60,7 +60,7 @@
             "streamSettings": {
                 "network": "ws",
                 "wsSettings":{
-                  "path": "vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                  "path": "/vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "in-vpn"

@@ -78,7 +78,7 @@
                 "network": "ws",
                 "security": "tls",
                 "wsSettings": {
-                    "path": "${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                    "path": "/${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "proxy-simple"
@@ -99,7 +99,7 @@
                 "network": "ws",
                 "security": "tls",
                 "wsSettings": {
-                    "path": "tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                    "path": "/tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "proxy-tor"
@@ -120,7 +120,7 @@
                 "network": "ws",
                 "security": "tls",
                 "wsSettings": {
-                    "path": "vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                    "path": "/vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
                 }
             },
             "tag": "proxy-vpn"
