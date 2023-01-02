@@ -1,5 +1,11 @@
 version: "3.9"
 
+networks:
+  v2fly:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
 services:
   v2fly-simple-shadosocks-gateway:
     hostname: v2ray
