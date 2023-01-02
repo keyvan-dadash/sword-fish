@@ -137,7 +137,7 @@
         }
     ],
     "routing": {
-        "domainStrategy": "AsIs",
+        "domainStrategy": "IPOnDemand",
         "balancers": [
             {
                 "tag": "b1",
@@ -165,7 +165,12 @@
               "type": "field",
               "inboundTag":["I-vpn"],
               "outboundTag":"O-websocket-vpn"
-            } 
+            },
+            {
+              "type": "field",
+              "network": "tcp,udp",
+              "balancerTag": "b1"
+            }
         ]
     }
 }
