@@ -54,7 +54,14 @@
             },
             "streamSettings": {
                 "network": "tcp",
-                "security": "tls"
+                "security": "tls",
+                "tlsSettings" : {
+			          "alpn": [
+                    "http/1.1"
+		            ],
+                "allowInsecure" : true,
+			          "serverName": "${V2FLY_TROJAN_SNI_NAME:-sniname}"
+            	}
             }
         },
         {
