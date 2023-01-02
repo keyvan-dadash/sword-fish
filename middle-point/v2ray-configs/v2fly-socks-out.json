@@ -95,7 +95,7 @@
         },
         {
             "protocol": "shadowsocks",
-            "tag": "O-websocket-tor",
+            "tag": "tor-O-websocket",
             "settings": {
                 "servers": [
                     {
@@ -116,7 +116,7 @@
         },
         {
             "protocol": "shadowsocks",
-            "tag": "O-websocket-vpn",
+            "tag": "vpn-O-websocket",
             "settings": {
                 "servers": [
                     {
@@ -159,12 +159,12 @@
             {
               "type": "field",
               "inboundTag":["I-tor"],
-              "outboundTag":"O-websocket-tor"
+              "outboundTag":"tor-O-websocket"
             },
             {
               "type": "field",
               "inboundTag":["I-vpn"],
-              "outboundTag":"O-websocket-vpn"
+              "outboundTag":"vpn-O-websocket"
             },
             {
               "type": "field",
