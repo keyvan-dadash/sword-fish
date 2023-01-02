@@ -47,7 +47,7 @@
                 "servers": [
                     {
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
-                        "port": 8443,
+                        "port": 443,
                         "password": "${V2FLY_PASSWORD:-strongpassword}"
                     }
                 ]

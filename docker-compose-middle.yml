@@ -42,11 +42,15 @@ services:
   v2fly-trojan-gateway:
     hostname: v2ray
     image: v2fly/v2fly-core
-    network_mode: host
+    network_mode: bridge
+    networks:
+      v2fly:
+        ipv4_address: 172.20.0.8
     ports:
-      - 8433
+      - "8443:8443"
     volumes:
       - ./build-configs/v2fly-trojan-in.json:/etc/v2ray/config.json
+      - ./trojan-certs:/etc/v2ray/trojan-certs
     command: "run -c /etc/v2ray/config.json"
 
   v2fly-out-gateway:
