@@ -140,11 +140,29 @@
         "domainStrategy": "IPOnDemand",
         "balancers": [
             {
-                "tag": "b1",
+                "tag": "all",
                 "selector": [
                     "O-trojan",
                     "O-websocket",
                     "O-grpc"
+                ]
+            },
+            {
+                "tag": "webs",
+                "selector": [
+                    "O-websocket"
+                ]
+            },
+            {
+                "tag": "grpc",
+                "selector": [
+                    "O-grpc"
+                ]
+            },
+            {
+                "tag": "trojan",
+                "selector": [
+                    "O-trojan"
                 ]
             }
         ],
@@ -169,7 +187,7 @@
             {
               "type": "field",
               "network": "tcp,udp",
-              "balancerTag": "b1"
+              "balancerTag": "grpc"
             }
         ]
     }
