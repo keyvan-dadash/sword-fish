@@ -11,20 +11,6 @@
             "protocol": "socks",
             "udp": true,
             "tag": "simple"
-        },
-        {
-            "listen": "0.0.0.0",
-            "port": "1${V2FLY_OUTBOUND_PORT:-1234}",
-            "protocol": "socks",
-            "udp": true,
-            "tag": "I-tor"
-        },
-        {
-            "listen": "0.0.0.0",
-            "port": "2${V2FLY_OUTBOUND_PORT:-1234}",
-            "protocol": "socks",
-            "udp": true,
-            "tag": "I-vpn"
         }
     ],
     "outbounds": [
@@ -36,7 +22,7 @@
                     {
                         "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
                         "port": 443,
-                        "password": "${V2FLY_TROJAN_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_TROJAN_OUT_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -81,7 +67,7 @@
                         "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_GRPC_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_GRPC_OUT_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -90,48 +76,6 @@
                 "security": "tls",
                 "grpcSettings": {
                     "serviceName": "${V2FLY_REMOTE_GRPC_SERVICE_NAME:-examplegrpcservicename}"
-                }
-            }
-        },
-        {
-            "protocol": "shadowsocks",
-            "tag": "tor-O-websocket",
-            "settings": {
-                "servers": [
-                    {
-                        "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
-                        "port": 443,
-                        "method": "chacha20-ietf-poly1305",
-                        "password": "tor-${V2FLY_WEBSOCKET_PASSWORD:-strongpassword}"
-                    }
-                ]
-            },
-            "streamSettings": {
-                "network": "ws",
-                "security": "tls",
-                "wsSettings": {
-                    "path": "tor-${V2FLY_REMOTE_WEBSOCKET_PATH:-websocketpath}"
-                }
-            }
-        },
-        {
-            "protocol": "shadowsocks",
-            "tag": "vpn-O-websocket",
-            "settings": {
-                "servers": [
-                    {
-                        "address": "${V2FLY_REMOTE_SERVER_ADDRESS:-address}",
-                        "port": 443,
-                        "method": "chacha20-ietf-poly1305",
-                        "password": "vpn-${V2FLY_WEBSOCKET_PASSWORD:-strongpassword}"
-                    }
-                ]
-            },
-            "streamSettings": {
-                "network": "ws",
-                "security": "tls",
-                "wsSettings": {
-                    "path": "vpn-${V2FLY_REMOTE_WEBSOCKET_PATH:-websocketpath}"
                 }
             }
         }
@@ -173,16 +117,6 @@
                     "geoip:private"
                 ],
                 "outboundTag": "block"
-            },
-            {
-              "type": "field",
-              "inboundTag":["I-tor"],
-              "outboundTag":"tor-O-websocket"
-            },
-            {
-              "type": "field",
-              "inboundTag":["I-vpn"],
-              "outboundTag":"vpn-O-websocket"
             },
             {
               "type": "field",

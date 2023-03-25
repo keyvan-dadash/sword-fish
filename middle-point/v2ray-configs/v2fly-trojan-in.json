@@ -11,8 +11,8 @@
             "settings": {
                 "clients": [
                     {
-                        "password": "${V2FLY_PASSWORD:-strongpassword}",
-                        "email": "${V2FLY_EMAIL:-email}"
+                        "password": "${V2FLY_TROJAN_IN_PASSWORD:-strongpassword}",
+                        "email": "${V2FLY_TROJAN_IN_EMAIL:-email}"
                     }
                 ]
             },
@@ -25,8 +25,8 @@
                     ],
                     "certificates": [
                         {
-                            "certificateFile": "${V2FLY_CERT_PATH:-path}",
-                            "keyFile": "${V2FLY_PRIV_KEY_PATH:-path}"
+                            "certificateFile": "${V2FLY_TROJAN_IN_CERT_PATH:-path}",
+                            "keyFile": "${V2FLY_TROJAN_IN_PRIV_KEY_PATH:-path}"
                         }
                     ]
                 }
