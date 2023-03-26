@@ -7,7 +7,7 @@
     "inbounds": [
         {
             "listen": "0.0.0.0",
-            "port": "${V2FLY_OUTBOUND_PORT:-1234}",
+            "port": "${V2FLY_OUTBOUND_PORT_VAR:-1234}",
             "protocol": "socks",
             "udp": true,
             "tag": "simple"

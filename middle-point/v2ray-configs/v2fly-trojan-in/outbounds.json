@@ -7,7 +7,7 @@
             "servers": [
                 {
                     "address": "${V2FLY_OUTBOUND_ADDRESS:-out}",
-                    "port": "${V2FLY_OUTBOUND_PORT:-1234}",
+                    "port": "${V2FLY_OUTBOUND_PORT_VAR:-1234}",
                     "udp": true
                 }
             ]

@@ -1,7 +1,7 @@
 [
     {
         "protocol": "trojan",
-        "tag": "O-trojan",
+        "tag": "${V2FLY_SOCKS_IN_TAG_VAR:-socks}-trojan-out",
         "settings": {
             "servers": [
                 {
@@ -24,7 +24,7 @@
     },
     {
         "protocol": "shadowsocks",
-        "tag": "O-websocket",
+        "tag": "${V2FLY_SOCKS_IN_TAG_VAR:-socks}-web-out",
         "settings": {
             "servers": [
                 {
@@ -45,7 +45,7 @@
     },
     {
         "protocol": "shadowsocks",
-        "tag": "O-grpc",
+        "tag": "${V2FLY_SOCKS_IN_TAG_VAR:-socks}-grpc-out",
         "settings": {
             "servers": [
                 {

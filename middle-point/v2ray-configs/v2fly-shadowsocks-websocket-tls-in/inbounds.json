@@ -1,17 +1,19 @@
-{
-    "_comment": "HERE",
-    "tag": "${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-in",
-    "listen": "0.0.0.0",
-    "port": "${V2FLY_WEBSOCKET_IN_PORT_VAR:-10000}",
-    "protocol": "shadowsocks",
-    "settings": {
-        "method": "chacha20-ietf-poly1305",
-        "password": "${V2FLY_WEBSOCKET_IN_PASSWORD:-strongpassword}"
-    },
-    "streamSettings": {
-        "network": "ws",
-        "wsSettings":{
-          "path": "/${V2FLY_WEBSOCKET_IN_PATH_VAR:-websocketpath}"
+[
+    {
+        "_comment": "HERE",
+        "tag": "${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-in",
+        "listen": "0.0.0.0",
+        "port": "${V2FLY_WEBSOCKET_IN_PORT_VAR:-10000}",
+        "protocol": "shadowsocks",
+        "settings": {
+            "method": "chacha20-ietf-poly1305",
+            "password": "${V2FLY_WEBSOCKET_IN_PASSWORD:-strongpassword}"
+        },
+        "streamSettings": {
+            "network": "ws",
+            "wsSettings":{
+            "path": "/${V2FLY_WEBSOCKET_IN_PATH_VAR:-websocketpath}"
+            }
         }
     }
-}
+]
