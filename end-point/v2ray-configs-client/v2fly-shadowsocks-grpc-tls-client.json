@@ -49,7 +49,7 @@
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_GRPC_IN_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -57,7 +57,7 @@
                 "network": "grpc",
                 "security": "tls",
                 "grpcSettings": {
-                    "serviceName": "${V2FLY_GRPC_SERVICE_NAME:-examplegrpcservicename}"
+                    "serviceName": "${V2FLY_GRPC_IN_SERVICE_NAME:-examplegrpcservicename}"
                 }
             },
             "tag": "proxy"

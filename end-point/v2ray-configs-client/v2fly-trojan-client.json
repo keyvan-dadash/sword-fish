@@ -48,7 +48,7 @@
                     {
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_TROJAN_IN_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -60,7 +60,7 @@
                     "http/1.1"
 		            ],
                 "allowInsecure" : true,
-			          "serverName": "${V2FLY_TROJAN_SNI_NAME:-sniname}"
+			          "serverName": "${V2FLY_TROJAN_IN_SNI_NAME:-sniname}"
             	}
             }
         },

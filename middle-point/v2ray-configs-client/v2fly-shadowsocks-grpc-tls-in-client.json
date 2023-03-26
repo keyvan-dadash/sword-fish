@@ -3,7 +3,9 @@
         "loglevel": "warning"
     },
     "inbounds": [
-        {   
+        {
+            "_comment": "HERE",
+            "tag": "${V2FLY_GRPC_IN_TAG_VAR:-grp}-insh",
             "listen": "127.0.0.1",
             "port": "8388",
             "protocol": "shadowsocks",
@@ -13,6 +15,8 @@
             }
         },
         {
+            "_comment": "HERE",
+            "tag": "${V2FLY_GRPC_IN_TAG_VAR:-grp}-inso",
             "listen": "127.0.0.1",
             "port": "1080",
             "protocol": "socks",
@@ -30,6 +34,8 @@
     ],
     "outbounds": [
         {
+            "_comment": "HERE",
+            "tag": "${V2FLY_GRPC_IN_TAG_VAR:-grp}-out",
             "protocol": "shadowsocks",
             "settings": {
                 "servers": [
@@ -47,8 +53,7 @@
                 "grpcSettings": {
                     "serviceName": "${V2FLY_GRPC_IN_SERVICE_NAME_VAR:-examplegrpcservicename}"
                 }
-            },
-            "tag": "proxy"
+            }
         },
         {
             "protocol": "freedom",
@@ -64,6 +69,15 @@
                     "geoip:private"
                 ],
                 "outboundTag": "direct"
+            },
+            {
+                "_comment": "HERE",
+                "type": "field",
+                "inboundTag": [
+                    "${V2FLY_GRPC_IN_TAG_VAR:-grp}-insh",
+                    "${V2FLY_GRPC_IN_TAG_VAR:-grp}-inso"
+                ],
+                "outboundTag": "${V2FLY_GRPC_IN_TAG_VAR:-grp}-out"
             }
         ]
     }

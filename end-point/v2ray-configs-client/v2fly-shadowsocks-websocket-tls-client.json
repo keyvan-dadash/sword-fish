@@ -2,18 +2,6 @@
     "log": {
         "loglevel": "warning"
     },
-    "routing": {
-        "domainStrategy": "AsIs",
-        "rules": [
-            {
-                "type": "field",
-                "ip": [
-                    "geoip:private"
-                ],
-                "outboundTag": "direct"
-            }
-        ]
-    },
     "inbounds": [
         {
             "listen": "127.0.0.1",
@@ -24,26 +12,6 @@
                 "password": "a"
             },
             "tag": "in-simple"
-        },
-        {
-            "listen": "127.0.0.1",
-            "port": "8389",
-            "protocol": "shadowsocks",
-            "settings": {
-                "method": "chacha20-ietf-poly1305",
-                "password": "a"
-            },
-            "tag": "in-tor"
-        },
-        {
-            "listen": "127.0.0.1",
-            "port": "8390",
-            "protocol": "shadowsocks",
-            "settings": {
-                "method": "chacha20-ietf-poly1305",
-                "password": "a"
-            },
-            "tag": "in-vpn"
         },
         {
             "listen": "127.0.0.1",
@@ -70,7 +38,7 @@
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_WEBSOCKET_IN_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -78,52 +46,10 @@
                 "network": "ws",
                 "security": "tls",
                 "wsSettings": {
-                    "path": "/${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                    "path": "/${V2FLY_WEBSOCKET_IN_PATH:-websocketpath}"
                 }
             },
             "tag": "proxy-simple"
-        },
-        {
-            "protocol": "shadowsocks",
-            "settings": {
-                "servers": [
-                    {
-                        "address": "${V2FLY_SERVER_ADDRESS:-address}",
-                        "port": 443,
-                        "method": "chacha20-ietf-poly1305",
-                        "password": "tor-${V2FLY_PASSWORD:-strongpassword}"
-                    }
-                ]
-            },
-            "streamSettings": {
-                "network": "ws",
-                "security": "tls",
-                "wsSettings": {
-                    "path": "/tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
-                }
-            },
-            "tag": "proxy-tor"
-        },
-        {
-            "protocol": "shadowsocks",
-            "settings": {
-                "servers": [
-                    {
-                        "address": "${V2FLY_SERVER_ADDRESS:-address}",
-                        "port": 443,
-                        "method": "chacha20-ietf-poly1305",
-                        "password": "vpn-${V2FLY_PASSWORD:-strongpassword}"
-                    }
-                ]
-            },
-            "streamSettings": {
-                "network": "ws",
-                "security": "tls",
-                "wsSettings": {
-                    "path": "/vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
-                }
-            },
-            "tag": "proxy-vpn"
         },
         {
             "protocol": "freedom",
@@ -139,16 +65,6 @@
                     "geoip:private"
                 ],
                 "outboundTag": "block"
-            },
-            {
-              "type": "field",
-              "inboundTag":["in-tor"],
-              "outboundTag":"proxy-tor"
-            },
-            {
-              "type": "field",
-              "inboundTag":["in-vpn"],
-              "outboundTag":"proxy-vpn"
             },
             {
               "type": "field",

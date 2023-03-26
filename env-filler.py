@@ -42,6 +42,7 @@ def handle_json_dir(output_file_path : Path, config_folder_path_str : str):
 def handle_json_file(output_file_path : Path, config_file_path_str : str):
     with open(config_file_path_str, "r+") as f:
         jsf = JSONFiller(json.load(f))
+        setup_callbacks(jsf)
         jsf.fill_json()
         output_file_path.parent.mkdir(parents=True, exist_ok=True)
         json_out = json.dumps(jsf.filled_json, indent=2)
