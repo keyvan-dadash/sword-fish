@@ -24,8 +24,9 @@ class Callback():
                 js.fill_json()
                 val = js.filled_json
             else:
+                index_of_elem = self._last_list[-1].index(val)
                 for i in range(len(self._new_vars) - 1):
-                    self._last_list[-1].append(copy.deepcopy(val))
+                    self._last_list[-1].insert(index_of_elem, copy.deepcopy(val))
                 js = JSONFiller(self._last_list[-1])
                 jsb = type(self)(self._new_vars)
                 jsb.setup_callback(js)

@@ -7,7 +7,7 @@
             "_comment": "HERE",
             "tag": "${V2FLY_TROJAN_IN_TAG_VAR:-tr}-insh",
             "listen": "127.0.0.1",
-            "port": "8388",
+            "port": "${V2FLY_SHS_IN_PORT_VAR:-8388}",
             "protocol": "shadowsocks",
             "settings": {
                 "method": "chacha20-ietf-poly1305",
@@ -18,7 +18,7 @@
             "_comment": "HERE",
             "tag": "${V2FLY_TROJAN_IN_TAG_VAR:-tr}-inso",
             "listen": "127.0.0.1",
-            "port": "1080",
+            "port": "${V2FLY_SO_IN_PORT_VAR:-1080}",
             "protocol": "socks",
             "settings": {
                 "auth": "noauth",
