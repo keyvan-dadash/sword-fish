@@ -1,0 +1,14 @@
+{
+    "_comment": "HERE",
+    "tag": "${V2FLY_GRPC_IN_TAG_VAR:-grp}-out",
+    "protocol": "socks",
+    "settings": {
+        "servers": [
+            {
+                "address": "${V2FLY_OUTBOUND_ADDRESS:-out}",
+                "port": "${V2FLY_OUTBOUND_PORT:-1234}",
+                "udp": true
+            }
+        ]
+    }
+}

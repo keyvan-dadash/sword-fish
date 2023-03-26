@@ -1,0 +1,31 @@
+[
+    {
+        "_comment": "HERE",
+        "tag": "${V2FLY_TROJAN_IN_TAG_VAR:-tr}-in",
+        "port": "${V2FLY_TROJAN_IN_PORT_VAR:-port}",
+        "protocol": "trojan",
+        "settings": {
+            "clients": [
+                {
+                    "password": "${V2FLY_TROJAN_IN_PASSWORD:-strongpassword}",
+                    "email": "${V2FLY_TROJAN_IN_EMAIL:-email}"
+                }
+            ]
+        },
+        "streamSettings": {
+            "network": "tcp",
+            "security": "tls",
+            "tlsSettings": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "certificates": [
+                    {
+                        "certificateFile": "${V2FLY_TROJAN_IN_CERT_PATH:-path}",
+                        "keyFile": "${V2FLY_TROJAN_IN_PRIV_KEY_PATH:-path}"
+                    }
+                ]
+            }
+        }
+    }
+]

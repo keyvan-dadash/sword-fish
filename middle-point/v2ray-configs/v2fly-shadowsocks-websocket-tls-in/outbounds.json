@@ -1,0 +1,14 @@
+{
+    "_comment": "HERE",
+    "tag": "${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-out",
+    "protocol": "socks",
+    "settings": {
+        "servers": [
+            {
+                "address": "${V2FLY_OUTBOUND_ADDRESS:-out}",
+                "port": "${V2FLY_OUTBOUND_PORT:-1234}",
+                "udp": true
+            }
+        ]
+    }
+}

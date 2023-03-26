@@ -1,0 +1,17 @@
+{
+    "domainStrategy": "AsIs",
+    "rules": [
+        {
+            "type": "field",
+            "ip": [
+                "geoip:private"
+            ],
+            "outboundTag": "block"
+        },
+        {
+            "type": "field",
+            "inboundTag":["${V2FLY_TROJAN_IN_TAG_VAR:-tr}-in"],
+            "outboundTag":"${V2FLY_TROJAN_IN_TAG_VAR:-tr}-out"
+        }
+    ]
+}

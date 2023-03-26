@@ -1,7 +1,7 @@
 [
     {
         "_comment": "HERE",
-        "tag": "${V2FLY_SH_IN_TAG_VAR:-shad}-out",
+        "tag": "${V2FLY_TROJAN_IN_TAG_VAR:-tr}-out",
         "protocol": "socks",
         "settings": {
             "servers": [
