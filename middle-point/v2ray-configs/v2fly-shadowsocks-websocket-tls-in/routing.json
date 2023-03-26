@@ -9,9 +9,10 @@
             "outboundTag": "block"
         },
         {
-          "type": "field",
-          "inboundTag":["${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-in"],
-          "outboundTag":"${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-out"
+            "_comment": "HERE",
+            "type": "field",
+            "inboundTag":["${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-in"],
+            "outboundTag":"${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-out"
         }
     ]
 }

@@ -19,16 +19,16 @@
     "inbounds": [
         {
             "listen": "0.0.0.0",
-            "port": "${V2FLY_GRPC_PORT:-10000}",
+            "port": "${V2FLY_GRPC_IN_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
                 "method": "chacha20-ietf-poly1305",
-                "password": "${V2FLY_PASSWORD:-strongpassword}"
+                "password": "${V2FLY_GRPC_IN_PASSWORD:-strongpassword}"
             },
             "streamSettings": {
                 "network": "grpc",
                 "grpcSettings": {
-                    "serviceName": "${V2FLY_GRPC_SERVICE_NAME:-examplegrpcservicename}"
+                    "serviceName": "${V2FLY_GRPC_IN_SERVICE_NAME:-examplegrpcservicename}"
                 }
             }
         }

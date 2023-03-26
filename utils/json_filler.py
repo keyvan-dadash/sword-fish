@@ -16,6 +16,7 @@ class JSONFiller():
         self._str_callback = lambda x : x
         self._val_callback = lambda x : x
         self._end_process = lambda x, y : x
+        self._eligible_val = lambda x : x
         
     def fill_json(self):
         self._substitude_env_vars(self._json_config)

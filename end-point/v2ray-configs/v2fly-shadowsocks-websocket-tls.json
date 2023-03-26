@@ -4,66 +4,22 @@
         "access": "/var/log/v2ray/access.log",
         "error": "/var/log/v2ray/error.log"
     },
-    "routing": {
-        "domainStrategy": "AsIs",
-        "rules": [
-            {
-                "type": "field",
-                "ip": [
-                    "geoip:private"
-                ],
-                "outboundTag": "block"
-            }
-        ]
-    },
     "inbounds": [
         {
             "listen": "0.0.0.0",
-            "port": "${V2FLY_WEBSOCKET_PORT:-10000}",
+            "port": "${V2FLY_WEBSOCKET_IN_PORT:-10000}",
             "protocol": "shadowsocks",
             "settings": {
                 "method": "chacha20-ietf-poly1305",
-                "password": "${V2FLY_PASSWORD:-strongpassword}"
+                "password": "${V2FLY_WEBSOCKET_IN_PASSWORD:-strongpassword}"
             },
             "streamSettings": {
                 "network": "ws",
                 "wsSettings":{
-                  "path": "/${V2FLY_WEBSOCKET_PATH:-websocketpath}"
+                  "path": "/${V2FLY_WEBSOCKET_IN_PATH:-websocketpath}"
                 }
             },
             "tag": "in-simple"
-        },
-        {
-            "listen": "0.0.0.0",
-            "port": "1${V2FLY_WEBSOCKET_PORT:-10000}",
-            "protocol": "shadowsocks",
-            "settings": {
-                "method": "chacha20-ietf-poly1305",
-                "password": "tor-${V2FLY_PASSWORD:-strongpassword}"
-            },
-            "streamSettings": {
-                "network": "ws",
-                "wsSettings":{
-                  "path": "/tor-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
-                }
-            },
-            "tag": "in-tor"
-        },
-        {
-            "listen": "0.0.0.0",
-            "port": "2${V2FLY_WEBSOCKET_PORT:-10000}",
-            "protocol": "shadowsocks",
-            "settings": {
-                "method": "chacha20-ietf-poly1305",
-                "password": "vpn-${V2FLY_PASSWORD:-strongpassword}"
-            },
-            "streamSettings": {
-                "network": "ws",
-                "wsSettings":{
-                  "path": "/vpn-${V2FLY_WEBSOCKET_PATH:-websocketpath}"
-                }
-            },
-            "tag": "in-vpn"
         }
     ],
     "outbounds": [
@@ -74,32 +30,6 @@
         {
             "protocol": "blackhole",
             "tag": "block"
-        },
-        {
-            "protocol": "socks",
-            "settings": {
-                "servers": [
-                    {
-                        "address": "${V2FLY_TOR_ADDRESS:-toraddress}",
-                        "port": 9050,
-                        "udp": true
-                    }
-                ]
-            },
-            "tag": "out-tor"
-        },
-        {
-            "protocol": "socks",
-            "settings": {
-                "servers": [
-                    {
-                        "address": "127.0.0.1",
-                        "port": 19050,
-                        "udp": true
-                    }
-                ]
-            },
-            "tag": "out-vpn"
         }
     ],
     "routing": {
@@ -111,16 +41,6 @@
                     "geoip:private"
                 ],
                 "outboundTag": "block"
-            },
-            {
-              "type": "field",
-              "inboundTag":["in-tor"],
-              "outboundTag":"out-tor"
-            },
-            {
-              "type": "field",
-              "inboundTag":["in-vpn"],
-              "outboundTag":"out-vpn"
             },
             {
               "type": "field",

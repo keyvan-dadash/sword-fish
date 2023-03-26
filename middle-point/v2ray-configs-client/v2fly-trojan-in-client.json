@@ -2,18 +2,6 @@
     "log": {
         "loglevel": "warning"
     },
-    "routing": {
-        "domainStrategy": "AsIs",
-        "rules": [
-            {
-                "type": "field",
-                "ip": [
-                    "geoip:private"
-                ],
-                "outboundTag": "direct"
-            }
-        ]
-    },
     "inbounds": [
         { 
             "listen": "127.0.0.1",
@@ -48,7 +36,7 @@
                     {
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_TROJAN_IN_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -68,5 +56,17 @@
             "protocol": "freedom",
             "tag": "direct"
         }
-    ]
+    ],
+    "routing": {
+        "domainStrategy": "AsIs",
+        "rules": [
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:private"
+                ],
+                "outboundTag": "direct"
+            }
+        ]
+    }
 }

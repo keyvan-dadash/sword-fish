@@ -2,18 +2,6 @@
     "log": {
         "loglevel": "warning"
     },
-    "routing": {
-        "domainStrategy": "AsIs",
-        "rules": [
-            {
-                "type": "field",
-                "ip": [
-                    "geoip:private"
-                ],
-                "outboundTag": "direct"
-            }
-        ]
-    },
     "inbounds": [
         {   
             "listen": "127.0.0.1",
@@ -49,7 +37,7 @@
                         "address": "${V2FLY_SERVER_ADDRESS:-address}",
                         "port": 443,
                         "method": "chacha20-ietf-poly1305",
-                        "password": "${V2FLY_PASSWORD:-strongpassword}"
+                        "password": "${V2FLY_GRPC_IN_PASSWORD:-strongpassword}"
                     }
                 ]
             },
@@ -57,7 +45,7 @@
                 "network": "grpc",
                 "security": "tls",
                 "grpcSettings": {
-                    "serviceName": "${V2FLY_GRPC_SERVICE_NAME:-examplegrpcservicename}"
+                    "serviceName": "${V2FLY_GRPC_IN_SERVICE_NAME_VAR:-examplegrpcservicename}"
                 }
             },
             "tag": "proxy"
@@ -66,5 +54,17 @@
             "protocol": "freedom",
             "tag": "direct"
         }
-    ]
+    ],
+    "routing": {
+        "domainStrategy": "AsIs",
+        "rules": [
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:private"
+                ],
+                "outboundTag": "direct"
+            }
+        ]
+    }
 }

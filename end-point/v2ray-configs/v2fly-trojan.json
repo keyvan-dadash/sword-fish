@@ -6,13 +6,13 @@
   },
   "inbounds": [
       {
-            "port": "${V2FLY_TROJAN_PORT:-port}",
+            "port": "${V2FLY_TROJAN_IN_PORT:-port}",
             "protocol": "trojan",
             "settings": {
                 "clients": [
                     {
-                        "password": "${V2FLY_PASSWORD:-strongpassword}",
-                        "email": "${V2FLY_EMAIL:-v2flyemail}"
+                        "password": "${V2FLY_TROJAN_IN_PASSWORD:-strongpassword}",
+                        "email": "${V2FLY_TROJAN_IN_EMAIL:-v2flyemail}"
                     }
                 ]
             },
@@ -25,8 +25,8 @@
                     ],
                     "certificates": [
                         {
-                            "certificateFile": "${V2FLY_CERT_PATH:-path}",
-                            "keyFile": "${V2FLY_PRIV_KEY_PATH:-path}"
+                            "certificateFile": "${V2FLY_TROJAN_IN_CERT_PATH:-path}",
+                            "keyFile": "${V2FLY_TROJAN_IN_PRIV_KEY_PATH:-path}"
                         }
                     ]
                 }
