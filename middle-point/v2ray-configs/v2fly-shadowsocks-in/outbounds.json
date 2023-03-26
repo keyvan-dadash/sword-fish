@@ -1,0 +1,16 @@
+[
+    {
+        "_comment": "HERE",
+        "protocol": "socks",
+        "tag": "${V2FLY_SH_IN_TAG_VAR:-shad}-out",
+        "settings": {
+            "servers": [
+                {
+                    "address": "${V2FLY_OUTBOUND_ADDRESS:-out}",
+                    "port": "${V2FLY_OUTBOUND_PORT:-1234}",
+                    "udp": true
+                }
+            ]
+        }
+    }
+]

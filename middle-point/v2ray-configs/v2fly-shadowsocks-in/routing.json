@@ -1,0 +1,18 @@
+{
+    "domainStrategy": "AsIs",
+    "rules": [
+        {
+            "type": "field",
+            "ip": [
+                "geoip:private"
+            ],
+            "outboundTag": "block"
+        },
+        {
+            "_comment": "HERE",
+            "type": "field",
+            "inboundTag": ["${V2FLY_SH_IN_TAG_VAR:-shad}-in"],
+            "outboundTag": "${V2FLY_SH_IN_TAG_VAR:-shad}-out"
+        }
+    ]
+}

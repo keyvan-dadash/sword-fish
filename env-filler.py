@@ -3,77 +3,61 @@
 import os
 import re
 import argparse
+import copy
 import json
 from pathlib import Path
 import errno
+import glob
+from utils.json_filler import JSONFiller, ProcessedType
+from utils.json_builder import JSONBuilder
+from utils.callbacks import Callback
+from utils.cast import *
 
-parser = argparse.ArgumentParser(description='Replace all variables inside json with with env variable')
+vars = [
+    ("", 0),
+    ("-web", 1),
+    ("-trojan", 2),
+    ("-grpc", 3),
+]
 
-parser.add_argument('--json-config', action='store', type=str, required=True)
-parser.add_argument('--output-dir', action='store', type=str, required = True)
+def setup_callbacks(json_f : JSONFiller):
+        c = Callback(vars)
+        c.setup_callback(json_f)
+        
+structure = [
+    ("log", setup_callbacks),
+    ("inbounds", setup_callbacks),
+    ("outbounds", setup_callbacks),
+    ("routing", setup_callbacks)
+]
 
-args = parser.parse_args()
+def main(args):
+    
+    config_path = Path(args.json_dir)
+    config_folder_path_str = args.json_dir
+    output_file_path = Path(args.output_dir + "/" + config_path.name + ".json")
+    
+    if not config_path.exists():
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.json_dir)
+    if config_path.is_file():
+        raise Exception("Specified json dir is not a folder")
 
-config_path = Path(args.json_config)
+    jsb = JSONBuilder(config_folder_path_str, structure)
 
-if not config_path.exists():
-    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.json_config)
+    jsb.gather_all_files()
+    jsb.build_json()
+    
+    output_file_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    output_file_path.write_text(jsb.built_json)
 
-if not config_path.is_file():
-    raise Exception("Specified json config is not a file")
+    print(jsb.built_json)
 
-config_filename = config_path.name
-output_file = args.output_dir + "/" + config_filename
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Replace all variables inside json with with env variable')
 
-def _cast_to_type(s):
-    try:
-        return int(s)
-    except ValueError:
-        try:
-            return float(s)
-        except ValueError:
-            return s
+    parser.add_argument('--json-dir', action='store', type=str, required=True)
+    parser.add_argument('--output-dir', action='store', type=str, required = True)
 
-def _process_str(v):
-    m = re.match('(.*?)\${(\w+)\:-(\w+)}(.*)', v)
-    if m:
-        env_name = m.group(2)
-        def_val = m.group(3)
-        env_val = os.environ.get(env_name)
-        if env_val is None:
-            env_val = _cast_to_type(def_val)
-        result = m.group(1) + env_val + m.group(4)
-        result_without_qut = result.replace("\"", "")
-        try:
-            result = int(result_without_qut)
-        except:
-            pass
-        return result
-    return v
-
-def _process_list(v):
-    for index, item in enumerate(v):
-        if isinstance(item, dict):
-            substitude_env_vars(item)
-        elif isinstance(item, list):
-            v[index] = _process_list(item)
-        elif isinstance(item, str):
-            v[index] = _process_str(item)
-    return v
-
-def substitude_env_vars(d):
-    for key in d.keys():
-        v = d.get(key)
-        if isinstance(v, str):
-            d[key] = _process_str(v)
-        elif isinstance(v, list):
-            d[key] = _process_list(v)
-        elif isinstance(v, dict):
-            substitude_env_vars(v)
-
-with open(config_path, 'r+') as config_f:
-    json_config = json.load(config_f)
-    substitude_env_vars(json_config)
-    with open(output_file, 'w+') as output_f:
-        json.dump(json_config, output_f, indent=2)
-
+    args = parser.parse_args()
+    main(args)
