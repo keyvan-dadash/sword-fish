@@ -13,6 +13,7 @@ import glob
 from utils.json_filler import JSONFiller, ProcessedType
 from utils.json_builder import JSONBuilder
 from utils.callbacks import Callback
+from utils.gpg_utils import GPGEncrypt
 from utils.cast import *
 
 from nginx_conf.nginx_utils import NGINXConfigBlockBuilder, NGINXParser
@@ -119,6 +120,18 @@ def nginx(args):
                             f.write(nginx_builder.built_formatted_config)
                             f.write("\n")
 
+def backup(args):
+    if (not args.middle_path) and (not args.end_path):
+        raise Exception("Either middle or end path should specified")
+    
+    if args.middle_path:
+        input_path = args.middle_path
+    elif args.end_path:
+        input_path = args.end_path
+        
+    gp = GPGEncrypt(input_path, args.output, args.passwd)
+    gp.encrypt()
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Sword fish cli')
     sub_parsers = parser.add_subparsers(help='sub-command help')
@@ -137,6 +150,14 @@ if __name__ == "__main__":
     nginx_parser.add_argument('--output-file-conf', action='store', type=str, required=False)
     nginx_parser.add_argument('--input-file-json', action='store', type=str, required=False)
     nginx_parser.add_argument('--output-file-json', action='store', type=str, required=False)
+    
+    # backup config subparser
+    backup_parser = sub_parsers.add_parser("backup")
+    backup_parser.set_defaults(func=backup)
+    backup_parser.add_argument('--middle-path', action='store', type=str, required=False)
+    backup_parser.add_argument('--end-path', action='store', type=str, required=False)
+    backup_parser.add_argument('--output', action='store', type=str, required=True)
+    backup_parser.add_argument('--passwd', action='store', type=str, required=True)
     
     args = parser.parse_args()
     args.func(args)
