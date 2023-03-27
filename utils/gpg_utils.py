@@ -12,7 +12,7 @@ class GPGEncrypt():
         # Set GPG Encoding
         self._gpg.encoding = 'utf-8'
         # Get dataToEncrypt full path
-        self._dataToEncrypt = (os.path.abspath(path_to_data))
+        self._dataToEncrypt = path_to_data
         # Setup tar filename to end with .zip
         self._tarFile = ("{}.tar".format(self._dataToEncrypt))
         # Setup encrypted filename to end with .gpg
@@ -20,14 +20,14 @@ class GPGEncrypt():
         
     def encrypt(self):
         self._dataTar()
-        # self._encryptFile()
+        self._encryptFile()
     
     def _dataTar(self):
         if os.path.isfile(self._dataToEncrypt):
             return
         else:
             with tarfile.open(self._tarFile, 'w|') as tar:
-                tar.add(self._out)
+                tar.add(self._dataToEncrypt)
                 tar.close()
 
     def _encryptFile(self):
@@ -51,3 +51,5 @@ class GPGEncrypt():
                 passphrase=passphrase,
                 armor=False,
                 output=self._out + ".tar.gpg")
+                
+        os.remove(self._tarFile)
