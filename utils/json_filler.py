@@ -14,7 +14,7 @@ class JSONFiller():
         self._dict_callback = lambda x : x
         self._list_callback = lambda x : x
         self._str_callback = lambda x : x
-        self._val_callback = lambda x : x
+        self._val_callback = lambda x, y : x
         self._end_process = lambda x, y : x
         self._eligible_val = lambda x : x
         
@@ -54,7 +54,7 @@ class JSONFiller():
                 env_val = cast_to_type(def_val)
             
             if self._eligible_val(env_name):
-                env_val = self._val_callback(env_val)
+                env_val = self._val_callback(env_name, env_val)
             result = m.group(1) + env_val + m.group(4)
             result_without_qut = result.replace("\"", "")
             try:
@@ -90,21 +90,25 @@ class JSONFiller():
             for key in d.keys():
                 new_key = self._process_str(key)
                 v = d.get(key)
+                new_val = v
                 if isinstance(v, str):
                     self._str_callback(v)
-                    d[key] = self._process_str(v)
-                    self._end_process(v, ProcessedType.STR)
+                    new_val = self._process_str(v)
+                    d[key] = new_val
+                    self._end_process(new_val, ProcessedType.STR)
                 elif isinstance(v, list):
                     self._list_callback(v)
-                    d[key] = self._process_list(v)
-                    self._end_process(v, ProcessedType.LIST)
+                    new_val = self._process_list(v)
+                    d[key] = new_val
+                    self._end_process(new_val, ProcessedType.LIST)
                 elif isinstance(v, dict):
                     self._dict_callback(v)
                     self._substitude_env_vars(v)
-                    self._end_process(v, ProcessedType.DICT)
+                    new_val = v
+                    self._end_process(new_val, ProcessedType.DICT)
 
                 if key != new_key:
-                    tmp[new_key] = (key, v)
+                    tmp[new_key] = (key, new_val)
             
             for key, value in tmp.items():
                 d[key] = value[1]

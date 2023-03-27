@@ -436,7 +436,7 @@ def loads(data, conf=True):
             index += m.end()
             continue
 
-        m = re.compile(r'^\s*stream\s*{').search(data[index:])
+        m = re.compile(r'^\s*stream\s* {').search(data[index:])
         if m:
             log.debug("Open (Stream)")
             s = Stream()
@@ -469,7 +469,7 @@ def loads(data, conf=True):
             index += m.end()
             continue
 
-        m = re.compile(r'^\s*upstream\s+(.*?)\s*{').search(data[index:])
+        m = re.compile(r'^\s*upstream\s+(.*?)\s* {').search(data[index:])
         if m and not n.search(m.group()):
             log.debug("Open (Upstream) {0}".format(m.group(1)))
             u = Upstream(m.group(1))
@@ -485,7 +485,7 @@ def loads(data, conf=True):
             index += m.end()
             continue
 
-        m = re.compile(r'^\s*map\s+(.*?".*?".*?|.*?)\s*{').search(data[index:])
+        m = re.compile(r'^\s*map\s+(.*?".*?".*?|.*?)\s* {').search(data[index:])
         if m and not n.search(m.group()):
             log.debug("Open (Map) {0}".format(m.group(1)))
             g = Map(m.group(1))

@@ -23,8 +23,16 @@ vars = [
     ("-grpc", 2),
 ]
 
+spec_var = {
+    "SNI": [
+        (".soft98.ir", 0),
+        (".mci.ir", 1),
+        (".downloadha.ir", 2),
+    ]
+}
+
 def setup_callbacks(json_f : JSONFiller):
-        c = Callback(vars)
+        c = Callback(vars, spec_var)
         c.setup_callback(json_f)
         
 structure = [

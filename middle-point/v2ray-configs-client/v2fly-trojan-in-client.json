@@ -54,7 +54,7 @@
                     "http/1.1"
 		            ],
                 "allowInsecure" : true,
-			          "serverName": "${V2FLY_TROJAN_SNI_NAME:-sniname}"
+			          "serverName": "${V2FLY_TROJAN_IN_SNI_NAME_VAR_SNI:-sniname}"
             	}
             }
         },

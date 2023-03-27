@@ -4,9 +4,10 @@ from .cast import *
 from .json_filler import JSONFiller, ProcessedType
 
 class Callback():
-    def __init__(self, new_vars : list) -> None:
+    def __init__(self, genral_new_vars : list, specialized_vars : dict = None) -> None:
         self._vars = {}
-        self._new_vars = new_vars
+        self._new_vars = genral_new_vars
+        self._spec_vars = specialized_vars
         self._depth = []
         self._current_depth = 0
         self._index = 0
@@ -19,7 +20,7 @@ class Callback():
             val["_comment"] = "FINISH"
             if len(self._last_list) == 0:
                 js = JSONFiller(val)
-                jsb = type(self)(self._new_vars)
+                jsb = type(self)(self._new_vars, self._spec_vars)
                 jsb.setup_callback(js)
                 js.fill_json()
                 val = js.filled_json
@@ -28,7 +29,7 @@ class Callback():
                 for i in range(len(self._new_vars) - 1):
                     self._last_list[-1].insert(index_of_elem, copy.deepcopy(val))
                 js = JSONFiller(self._last_list[-1])
-                jsb = type(self)(self._new_vars)
+                jsb = type(self)(self._new_vars, self._spec_vars)
                 jsb.setup_callback(js)
                 js.fill_json()
                 self._last_list[-1] = js.filled_json
@@ -41,8 +42,13 @@ class Callback():
     def _str_callback(self, val):
         return val
     
-    def _val_callback(self, val):
-        var = self._new_vars[self._index % len(self._new_vars)]
+    def _val_callback(self, val_name, val):
+        specilized_var_name = val_name.split("_VAR_")
+        if len(specilized_var_name) > 1:
+            var_list = self._spec_vars[specilized_var_name[1]]
+            var = var_list[self._index % len(var_list)]
+        else:
+            var = self._new_vars[self._index % len(self._new_vars)]
         if can_be_int(val):
             val = str(int(val) + var[1])
         else:
