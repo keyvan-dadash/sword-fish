@@ -86,7 +86,9 @@ class JSONFiller():
             self._process_list(d)
             self._end_process(d, ProcessedType.LIST)
         else:
+            tmp = {}
             for key in d.keys():
+                new_key = self._process_str(key)
                 v = d.get(key)
                 if isinstance(v, str):
                     self._str_callback(v)
@@ -100,3 +102,10 @@ class JSONFiller():
                     self._dict_callback(v)
                     self._substitude_env_vars(v)
                     self._end_process(v, ProcessedType.DICT)
+
+                if key != new_key:
+                    tmp[new_key] = (key, v)
+            
+            for key, value in tmp.items():
+                d[key] = value[1]
+                d.pop(value[0])

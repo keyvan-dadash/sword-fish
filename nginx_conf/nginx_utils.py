@@ -21,7 +21,7 @@ class NGINXParser():
         
     @property
     def as_json(self):
-        json.dumps(self._extracted_config.as_dict, indent=2)
+        return json.dumps(self._extracted_config.as_dict, indent=2)
         
     @property
     def as_dict(self):
