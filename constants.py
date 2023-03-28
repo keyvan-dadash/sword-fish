@@ -12,6 +12,14 @@ SPECILIZED_VARS = {
     ]
 }
 
+CERTS = {
+    "V2FLY_TROJAN_IN_SNI_NAME_VAR_SNI": [
+        ("-web", ".soft98.ir"),
+        ("-trojan", ".mci.ir"),
+        ("-grpc", ".downloadha.ir")
+    ]
+}
+
 DEVICES = {
     "middle" : {
         "V2RAY_ENV_PATH": "middle-point/v2ray-configs-env",
@@ -36,6 +44,8 @@ DEVICES = {
         "NGINX_ROOT_CONFIG": "nginx_conf/sword-fish-nginx-root-middle.json",
         "NGINX_CONFIG_OUTPUT": "build-nginx-configs/",
         "NGINX_ENV": "nginx_conf/",
+        
+        "CERT_OUTPUT": "certs",
     },
     "end" : {
         "V2RAY_ENV_PATH": "end-point/v2ray-configs-env",
@@ -60,5 +70,7 @@ DEVICES = {
         "NGINX_ROOT_CONFIG": "nginx_conf/sword-fish-nginx-root-end.json",
         "NGINX_CONFIG_OUTPUT": "build-nginx-configs/",
         "NGINX_ENV": "nginx_conf/",
+        
+        "CERT_OUTPUT": "certs",
     },
 }

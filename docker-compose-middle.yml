@@ -56,7 +56,7 @@ services:
       - "8443:8443"
     volumes:
       - ./build-configs/v2fly-trojan-in.json:/etc/v2ray/config.json
-      - ./trojan-certs:/etc/v2ray/trojan-certs
+      - ./certs:/etc/v2ray/certs
     command: "run -c /etc/v2ray/config.json"
 
   v2fly-out-gateway:

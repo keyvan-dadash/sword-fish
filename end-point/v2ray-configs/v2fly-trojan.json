@@ -25,8 +25,8 @@
                     ],
                     "certificates": [
                         {
-                            "certificateFile": "${V2FLY_TROJAN_IN_CERT_PATH:-path}",
-                            "keyFile": "${V2FLY_TROJAN_IN_PRIV_KEY_PATH:-path}"
+                            "certificateFile": "${V2FLY_TROJAN_IN_CERT_PATH_VAR:-path}.cert",
+                            "keyFile": "${V2FLY_TROJAN_IN_PRIV_KEY_PATH_VAR:-path}.key"
                         }
                     ]
                 }

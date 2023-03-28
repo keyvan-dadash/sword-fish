@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import glob
+import os
 
 from utils.json_filler import JSONFiller, ProcessedType
 from utils.json_builder import JSONBuilder
@@ -106,7 +107,7 @@ def build_config(path_to_config : str, output_config : str, config_type : str):
             structure,
             setup_callbacks)
         config_gen.build_configs()
-
+    
 def setup(args):
     variables = DEVICES[args.device]
     v2ray_env_in = EnvInjector(variables["V2RAY_ENV_PATH"])
@@ -136,6 +137,25 @@ def setup(args):
     
     # build nginx server config
     nginx_input_json(variables["NGINX_SERVER_CONFIG"], variables["NGINX_CONFIG_OUTPUT"] + "nginx_server.conf")
+    
+    # override nginx configs
+    if args.nginx:
+        root_config = variables["NGINX_CONFIG_OUTPUT"] + "nginx_root.conf"
+        server_config = variables["NGINX_CONFIG_OUTPUT"] + "nginx_server.conf"
+        os.system(f"cat {root_config} >> /etc/nginx/nginx.conf")
+        os.system(f"cat {server_config} > /etc/nginx/sites-available/default")
+    
+    if args.gen_cert:
+        cert_output = variables["CERT_OUTPUT"]
+        Path(cert_output).mkdir(exist_ok=True, parents=True)
+        for key, value in CERTS.items():
+            env = os.environ[key]
+            if isinstance(value, list):
+                for item in value:
+                    cn = env + item[1]
+                    print(cn)
+                    os.system(f"""openssl req  -nodes -new -x509  -keyout {cert_output}/server{item[0]}.key -out {cert_output}/server{item[0]}.cert \\
+                              -subj \"/C=IR/ST=Tehran/L=Tehran/O=Soft98/OU=IT Department/CN={cn}\"""")
   
     v2ray_env_in.remove_env()
     ss_env_in.remove_env()
@@ -171,6 +191,8 @@ if __name__ == "__main__":
     setup_parser = sub_parsers.add_parser("setup")
     setup_parser.set_defaults(func=setup)
     setup_parser.add_argument('--device', choices=['middle', 'end'], required=True)
+    setup_parser.add_argument('--gen-cert', action='store_true', required=False)
+    setup_parser.add_argument('--nginx', action='store_true', required=False)
     
     args = parser.parse_args()
     args.func(args)
