@@ -14,26 +14,15 @@ from utils.json_filler import JSONFiller, ProcessedType
 from utils.json_builder import JSONBuilder
 from utils.callbacks import Callback
 from utils.gpg_utils import GPGEncrypt
+from utils.v2ray_config_helper import V2RAYConfigGenerator, ConfigType, EnvInjector
 from utils.cast import *
 
 from nginx_conf.nginx_utils import NGINXConfigBlockBuilder, NGINXParser
 
-vars = [
-    ("-web", 0),
-    ("-trojan", 1),
-    ("-grpc", 2),
-]
-
-spec_var = {
-    "SNI": [
-        (".soft98.ir", 0),
-        (".mci.ir", 1),
-        (".downloadha.ir", 2),
-    ]
-}
+from constants import *
 
 def setup_callbacks(json_f : JSONFiller):
-        c = Callback(vars, spec_var)
+        c = Callback(GLOBAL_VARS, SPECILIZED_VARS)
         c.setup_callback(json_f)
         
 structure = [
@@ -43,50 +32,17 @@ structure = [
     ("routing", setup_callbacks)
 ]
 
-def handle_json_dir(output_file_path : Path, config_folder_path_str : str):
-    jsb = JSONBuilder(config_folder_path_str, structure)
-    jsb.gather_all_files()
-    jsb.build_json()
-    output_file_path.parent.mkdir(parents=True, exist_ok=True)
-    output_file_path.write_text(jsb.built_json)
-    
-    print(jsb.built_json)
-
-def handle_json_file(output_file_path : Path, config_file_path_str : str):
-    with open(config_file_path_str, "r+") as f:
-        jsf = JSONFiller(json.load(f))
-        setup_callbacks(jsf)
-        jsf.fill_json()
-        output_file_path.parent.mkdir(parents=True, exist_ok=True)
-        json_out = json.dumps(jsf.filled_json, indent=2)
-        output_file_path.write_text(json_out)
-    
-        print(json_out)
-
-
 def v2ray(args):
     if args.json_dir is None and args.json_file is None:
         raise Exception("Eigher json-dir or json-file should present")
     
+    config_gen = None
     if args.json_dir:
-        config_path = Path(args.json_dir)
-        config_folder_path_str = args.json_dir
-        output_file_path = Path(args.output_dir + "/" + config_path.name + ".json")
-        if not config_path.exists():
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.json_dir)
-        if config_path.is_file():
-            raise Exception("Specified json dir is not a folder")
-        handle_json_dir(output_file_path, config_folder_path_str)
-        
+        config_gen = V2RAYConfigGenerator(args.json_dir, args.output_dir, ConfigType.DIR, structure, setup_callbacks)
     elif args.json_file:
-        config_file = Path(args.json_file)
-        config_file_path_str = args.json_file
-        output_file_path = Path(args.output_dir + "/" + config_file.name)
-        if not config_file .exists():
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.json_dir)
-        if not config_file.is_file():
-            raise Exception("Specified json dir is not a file")
-        handle_json_file(output_file_path, config_file_path_str)
+        config_gen = V2RAYConfigGenerator(args.json_file, args.output_dir, ConfigType.FILE, structure, setup_callbacks)
+        
+    config_gen.build_configs()
 
 def nginx(args):
     if (not (args.input_file_conf and args.output_file_json)) and \
@@ -131,6 +87,47 @@ def backup(args):
         
     gp = GPGEncrypt(input_path, args.output, args.passwd)
     gp.encrypt()
+    
+def is_file(type : str):
+    if "File" not in type:
+        return True
+    return False
+
+def build_config(path_to_config : str, output_config : str, config_type : str):
+    file_type = ConfigType.FILE
+    if not is_file(config_type):
+        file_type = ConfigType.DIR
+    for item in glob.glob(path_to_config + "/*"):
+        config_gen = V2RAYConfigGenerator(
+            item,
+            output_config,
+            file_type,
+            structure,
+            setup_callbacks)
+        config_gen.build_configs()
+
+def setup(args):
+    variables = DEVICES[args.device]
+    v2ray_env_in = EnvInjector(variables["V2RAY_ENV_PATH"])
+    v2ray_env_in.inject_env()
+
+    ss_env_in = EnvInjector(variables["SS_ENV_PATH"])
+    ss_env_in.inject_env()
+    
+    Path(variables["BUILD_CONFIG_OUTPUT"]).mkdir(exist_ok=True, parents=True)
+    Path(variables["BUILD_CLIENT_CONFIG_OUTPUT"]).mkdir(exist_ok=True, parents=True)
+    
+    # build v2ray configs
+    build_config(variables["V2RAY_PATH"], variables["BUILD_CONFIG_OUTPUT"], variables["V2RAY_TYPE"])
+    
+    # build v2ray client configs
+    build_config(variables["V2RAY_CLIENTS_PATH"], variables["BUILD_CLIENT_CONFIG_OUTPUT"], variables["V2RAY_CLIENTS_TYPE"])
+    
+    # build shadowsocks configs
+    build_config(variables["SS_PATH"], variables["BUILD_CONFIG_OUTPUT"], variables["SS_TYPE"])
+  
+    v2ray_env_in.remove_env()
+    ss_env_in.remove_env()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Sword fish cli')
@@ -158,6 +155,10 @@ if __name__ == "__main__":
     backup_parser.add_argument('--end-path', action='store', type=str, required=False)
     backup_parser.add_argument('--output', action='store', type=str, required=True)
     backup_parser.add_argument('--passwd', action='store', type=str, required=True)
+    
+    setup_parser = sub_parsers.add_parser("setup")
+    setup_parser.set_defaults(func=setup)
+    setup_parser.add_argument('--device', choices=['middle', 'end'], required=True)
     
     args = parser.parse_args()
     args.func(args)

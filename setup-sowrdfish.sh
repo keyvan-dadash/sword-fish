@@ -5,7 +5,9 @@ mkdir -p client-configs
 
 for i in "$@"; do
   IFS=$'\n'
-  files=($(find "$i" -type f))
+  files=($(find "$i" -type d))
+  echo $files
+  exit
   unset IFS
   for j in "${files[@]}"
   do
