@@ -1,13 +1,8 @@
 #!/usr/bin/python3
 
-import os
-import re
 import argparse
-import copy
 import json
 from pathlib import Path
-from functools import wraps
-import errno
 import glob
 
 from utils.json_filler import JSONFiller, ProcessedType
@@ -44,37 +39,43 @@ def v2ray(args):
         
     config_gen.build_configs()
 
+def nginx_input_conf(input_file_conf, output_file_json):
+    nginx_parser = NGINXParser(input_file_conf)
+    nginx_parser.extract_config()
+    with open(output_file_json, "w+") as f:
+        f.write(nginx_parser.as_json)
+
+def nginx_input_json(input_file_json, output_file_conf):
+    with open(input_file_json, 'r+') as config_f:
+        json_config = json.load(config_f)
+        json_filler = JSONFiller(json_config)
+        setup_callbacks(json_filler)
+        json_filler.fill_json()
+        json_config = json_config["conf"]
+        
+        if isinstance(json_config, dict):
+            nginx_builder = NGINXConfigBlockBuilder(json_config)
+            nginx_builder.generate_formatted_nginx_config()
+            with open(output_file_conf, 'w+') as f:
+                f.write(nginx_builder.built_formatted_config)
+        elif isinstance(json_config, list):
+            with open(output_file_conf, 'w+') as f:
+                for item in json_config:
+                    nginx_builder = NGINXConfigBlockBuilder(item)
+                    nginx_builder.generate_formatted_nginx_config()
+                    f.write(nginx_builder.built_formatted_config)
+                    f.write("\n")
+
 def nginx(args):
     if (not (args.input_file_conf and args.output_file_json)) and \
             (not (args.input_file_json and args.output_file_conf)):
         raise Exception("Input conf and Output json should pair or Input json and Output conf should pair")
     
     if args.input_file_conf and args.output_file_json:
-        nginx_parser = NGINXParser(args.input_file_conf)
-        nginx_parser.extract_config()
-        with open(args.output_file_json, "w+") as f:
-            f.write(nginx_parser.as_json)
+        nginx_input_conf(args.input_file_conf, args.output_file_json)
         
     elif args.input_file_json and args.output_file_conf:
-        with open(args.input_file_json, 'r+') as config_f:
-                json_config = json.load(config_f)
-                json_filler = JSONFiller(json_config)
-                setup_callbacks(json_filler)
-                json_filler.fill_json()
-                json_config = json_config["conf"]
-                
-                if isinstance(json_config, dict):
-                    nginx_builder = NGINXConfigBlockBuilder(json_config)
-                    nginx_builder.generate_formatted_nginx_config()
-                    with open(args.output_file_conf, 'w+') as f:
-                        f.write(nginx_builder.built_formatted_config)
-                elif isinstance(json_config, list):
-                    with open(args.output_file_conf, 'w+') as f:
-                        for item in json_config:
-                            nginx_builder = NGINXConfigBlockBuilder(item)
-                            nginx_builder.generate_formatted_nginx_config()
-                            f.write(nginx_builder.built_formatted_config)
-                            f.write("\n")
+        nginx_input_json(args.input_file_json, args.output_file_conf)
 
 def backup(args):
     if (not args.middle_path) and (not args.end_path):
@@ -114,8 +115,12 @@ def setup(args):
     ss_env_in = EnvInjector(variables["SS_ENV_PATH"])
     ss_env_in.inject_env()
     
+    nginx_env_in = EnvInjector(variables["NGINX_ENV"])
+    nginx_env_in.inject_env()
+    
     Path(variables["BUILD_CONFIG_OUTPUT"]).mkdir(exist_ok=True, parents=True)
     Path(variables["BUILD_CLIENT_CONFIG_OUTPUT"]).mkdir(exist_ok=True, parents=True)
+    Path(variables["NGINX_CONFIG_OUTPUT"]).mkdir(exist_ok=True, parents=True)
     
     # build v2ray configs
     build_config(variables["V2RAY_PATH"], variables["BUILD_CONFIG_OUTPUT"], variables["V2RAY_TYPE"])
@@ -125,9 +130,16 @@ def setup(args):
     
     # build shadowsocks configs
     build_config(variables["SS_PATH"], variables["BUILD_CONFIG_OUTPUT"], variables["SS_TYPE"])
+    
+    # build nginx root config
+    nginx_input_json(variables["NGINX_ROOT_CONFIG"], variables["NGINX_CONFIG_OUTPUT"] + "nginx_root.conf")
+    
+    # build nginx server config
+    nginx_input_json(variables["NGINX_SERVER_CONFIG"], variables["NGINX_CONFIG_OUTPUT"] + "nginx_server.conf")
   
     v2ray_env_in.remove_env()
     ss_env_in.remove_env()
+    nginx_env_in.remove_env()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Sword fish cli')

@@ -31,6 +31,11 @@ DEVICES = {
         
         "BUILD_CONFIG_OUTPUT": "build-configs/",
         "BUILD_CLIENT_CONFIG_OUTPUT": "client-configs/",
+        
+        "NGINX_SERVER_CONFIG": "nginx_conf/sword-fish-nginx-middle.json",
+        "NGINX_ROOT_CONFIG": "nginx_conf/sword-fish-nginx-root-middle.json",
+        "NGINX_CONFIG_OUTPUT": "build-nginx-configs/",
+        "NGINX_ENV": "nginx_conf/",
     },
     "end" : {
         "V2RAY_ENV_PATH": "end-point/v2ray-configs-env",
@@ -50,5 +55,10 @@ DEVICES = {
         
         "BUILD_CONFIG_OUTPUT": "build-configs/",
         "BUILD_CLIENT_CONFIG_OUTPUT": "client-configs/",
+        
+        "NGINX_SERVER_CONFIG": "nginx_conf/sword-fish-nginx-end.json",
+        "NGINX_ROOT_CONFIG": "nginx_conf/sword-fish-nginx-root-end.json",
+        "NGINX_CONFIG_OUTPUT": "build-nginx-configs/",
+        "NGINX_ENV": "nginx_conf/",
     },
 }

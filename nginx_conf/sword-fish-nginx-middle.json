@@ -1,0 +1,92 @@
+{
+  "conf": [
+    {
+      "server": [
+        {
+          "listen": "4443 http2"
+        },
+        {
+          "listen": "[::]:4443 http2"
+        },
+        {
+          "client_max_body_size": "100M"
+        },
+        {
+          "server_name": "${WEB_DOMAINS:-domains}"
+        },
+        {
+          "_comment": "HERE",
+          "location /${V2FLY_GRPC_IN_SERVICE_NAME_VAR:-grpc}": [
+            {
+              "if ($request_method != \"POST\")": [
+                {
+                  "return": "404"
+                }
+              ]
+            },
+            {
+              "grpc_socket_keepalive": "on"
+            },
+            {
+              "grpc_intercept_errors": "on"
+            },
+            {
+              "grpc_pass": "grpc://127.0.0.1:${V2FLY_GRPC_IN_PORT_VAR:-10000}"
+            },
+            {
+              "grpc_set_header": "Upgrade $http_upgrade"
+            },
+            {
+              "grpc_set_header": "Connection \"upgrade\""
+            },
+            {
+              "grpc_set_header": "Host $host"
+            },
+            {
+              "grpc_set_header": "X-Real-IP $remote_addr"
+            },
+            {
+              "grpc_set_header": "X-Forwarded-For $proxy_add_x_forwarded_for"
+            }
+          ]
+        },
+        {
+          "_comment": "HERE",
+          "location /${V2FLY_WEBSOCKET_IN_PATH_VAR:-ws}": [
+            {
+              "if ($http_upgrade != \"websocket\")": [
+                {
+                  "return": "404"
+                }
+              ]
+            },
+            {
+              "proxy_redirect": "off"
+            },
+            {
+              "proxy_pass": "http://127.0.0.1:${V2FLY_WEBSOCKET_IN_PORT_VAR:-20000}"
+            },
+            {
+              "proxy_http_version": "1.1"
+            },
+            {
+              "proxy_set_header": "Upgrade $http_upgrade"
+            },
+            {
+              "proxy_set_header": "Connection \"upgrade\""
+            },
+            {
+              "proxy_set_header": "Host $host"
+            },
+            {
+              "proxy_set_header": "X-Real-IP $remote_addr"
+            },
+            {
+              "proxy_set_header": "X-Forwarded-For $proxy_add_x_forwarded_for"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

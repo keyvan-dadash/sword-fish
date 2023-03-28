@@ -1,0 +1,48 @@
+{
+  "conf": [
+    {
+      "stream ": [
+        {
+          "upstream ${V2FLY_TROJAN_IN_TAG_VAR:-tr}": [
+            {
+              "server": "127.0.0.1:${V2FLY_TROJAN_IN_PORT_VAR:-8443}"
+            }
+          ]
+        },
+        {
+          "upstream nginx": [
+            {
+              "server": "127.0.0.1:4443"
+            }
+          ]
+        },
+        {
+          "map $ssl_preread_server_name $upstream": [
+            {
+              "${V2FLY_TROJAN_IN_SNI_NAME_VAR_SNI:-sni}": "${V2FLY_TROJAN_IN_TAG_VAR:-tr}"
+            },
+            {
+              "default": "nginx"
+            }
+          ]
+        },
+        {
+          "server": [
+            {
+              "listen": "443"
+            },
+            {
+              "listen": "[::]:443"
+            },
+            {
+              "proxy_pass": "$upstream"
+            },
+            {
+              "ssl_preread": "on"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
