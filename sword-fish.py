@@ -5,6 +5,7 @@ import json
 import subprocess
 from pathlib import Path
 import glob
+import shutil
 import os
 import uvicorn
 import time
@@ -12,7 +13,7 @@ import time
 from utils.json_filler import JSONFiller, ProcessedType
 from utils.json_builder import JSONBuilder
 from utils.callbacks import Callback
-from utils.gpg_utils import GPGEncrypt
+from utils.gpg_utils import GPGEncrypt, GPGDecryptAndExtract
 from utils.v2ray_config_helper import V2RAYConfigGenerator, ConfigType, EnvInjector
 from utils.cast import *
 
@@ -82,17 +83,26 @@ def nginx(args):
     elif args.input_file_json and args.output_file_conf:
         nginx_input_json(args.input_file_json, args.output_file_conf)
 
-def backup(args):
-    if (not args.middle_path) and (not args.end_path):
-        raise Exception("Either middle or end path should specified")
+def copy_root_folder(input_path, output_path):
+    if not Path(input_path).exists():
+        return
+    root_folder = os.path.basename(input_path)
+    output_folder = os.path.join(output_path, root_folder)
+    shutil.copytree(input_path, output_folder, dirs_exist_ok=True)
     
-    if args.middle_path:
-        input_path = args.middle_path
-    elif args.end_path:
-        input_path = args.end_path
+def backup(args):
+    variables = DEVICES[args.device]
+    
+    Path("./tmp").mkdir(parents=True, exist_ok=True)
+    copy_root_folder(variables["V2RAY_ENV_PATH"], "./tmp")
+    copy_root_folder(variables["SS_ENV_PATH"], "./tmp")
+    copy_root_folder(variables["NGINX_ENV"], "./tmp")
+    copy_root_folder(variables["CERT_OUTPUT"], "./tmp")
         
-    gp = GPGEncrypt(input_path, args.output, args.passwd)
+    gp = GPGEncrypt("./tmp", args.output, args.passwd)
     gp.encrypt()
+    
+    shutil.rmtree("./tmp")
     
 def is_file(type : str):
     if "File" not in type:
@@ -188,6 +198,40 @@ def monitor(args):
             with open("monitor.pid", "w+") as f:
                 f.write(str(os.getpid()))
             run_monitor_server(args=args)
+            
+            
+def copy_content(input_path : str, output_path : str):
+    if not Path(input_path).exists():
+        return
+    for item in glob.glob(input_path + "/*"):
+        pi = Path(input_path + "/" + item)
+        po = Path(output_path + "/" + item)
+        po.mkdir(parents=True, exist_ok=True)
+        if not pi.exists():
+            continue
+        env_content = pi.read_text()
+        po.write_text(env_content)
+            
+def setupb(args):
+    gpgo = GPGDecryptAndExtract(args.from_input, args.passwd, "./backup")
+    gpgo.decrypt_and_extract()
+    variables = DEVICES[args.device]
+    
+    v2ray_env_in = "./backup" + "/" + variables["V2RAY_ENV_PATH"].split("/")[1]
+    v2ray_env_out = variables["V2RAY_ENV_PATH"]
+    copy_content(v2ray_env_in, v2ray_env_out)
+
+    ss_env_in = "./backup" + "/" + variables["SS_ENV_PATH"].split("/")[1]
+    ss_env_out = variables["SS_ENV_PATH"]
+    copy_content(ss_env_in, ss_env_out)
+    
+    nginx_env_in = "./backup" + "/" + variables["NGINX_ENV"].split("/")[0]
+    nginx_env_out = variables["NGINX_ENV"]
+    copy_content(nginx_env_in, nginx_env_out)
+    
+    cert_env_in = "./backup" + "/" + variables["CERT_OUTPUT"]
+    cert_env_out = variables["CERT_OUTPUT"]
+    copy_content(cert_env_in, cert_env_out)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Sword fish cli')
@@ -211,8 +255,7 @@ if __name__ == "__main__":
     # backup config subparser
     backup_parser = sub_parsers.add_parser("backup")
     backup_parser.set_defaults(func=backup)
-    backup_parser.add_argument('--middle-path', action='store', type=str, required=False)
-    backup_parser.add_argument('--end-path', action='store', type=str, required=False)
+    backup_parser.add_argument('--device', choices=['middle', 'end'], required=True)
     backup_parser.add_argument('--output', action='store', type=str, required=True)
     backup_parser.add_argument('--passwd', action='store', type=str, required=True)
     
@@ -230,6 +273,13 @@ if __name__ == "__main__":
     monitor_parser.add_argument('--terminate', action='store_true', required=False)
     monitor_parser.add_argument('--host', action='store', type=str, required=False, default="127.0.0.1")
     monitor_parser.add_argument('--port', action='store', type=int, required=False, default=8000)
+    
+    # setupb config subparser
+    setupb_parser = sub_parsers.add_parser("setupb")
+    setupb_parser.set_defaults(func=setupb)
+    setupb_parser.add_argument('--device', choices=['middle', 'end'], required=True)
+    setupb_parser.add_argument('--from-input', action='store', required=True)
+    setupb_parser.add_argument('--passwd', action='store', type=str, required=True)
     
     args = parser.parse_args()
     args.func(args)

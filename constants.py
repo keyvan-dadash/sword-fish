@@ -43,7 +43,7 @@ DEVICES = {
         "NGINX_SERVER_CONFIG": "nginx_conf/sword-fish-nginx-middle.json",
         "NGINX_ROOT_CONFIG": "nginx_conf/sword-fish-nginx-root-middle.json",
         "NGINX_CONFIG_OUTPUT": "build-nginx-configs/",
-        "NGINX_ENV": "nginx_conf/",
+        "NGINX_ENV": "nginx_conf",
         
         "CERT_OUTPUT": "certs",
     },
@@ -69,7 +69,7 @@ DEVICES = {
         "NGINX_SERVER_CONFIG": "nginx_conf/sword-fish-nginx-end.json",
         "NGINX_ROOT_CONFIG": "nginx_conf/sword-fish-nginx-root-end.json",
         "NGINX_CONFIG_OUTPUT": "build-nginx-configs/",
-        "NGINX_ENV": "nginx_conf/",
+        "NGINX_ENV": "nginx_conf",
         
         "CERT_OUTPUT": "certs",
     },

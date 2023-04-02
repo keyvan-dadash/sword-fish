@@ -53,3 +53,29 @@ class GPGEncrypt():
                 output=self._out + ".tar.gpg")
                 
         os.remove(self._tarFile)
+        
+class GPGDecryptAndExtract:
+    
+    def __init__(self, input_path, password, output_path):
+        self.input_path = input_path
+        self.password = password
+        self.output_path = output_path
+        
+    def decrypt_and_extract(self):
+        # Initialize GPG object
+        gpg = gnupg.GPG()
+        
+        # Decrypt the file
+        with open(self.input_path, 'rb') as f:
+            decrypted_data = gpg.decrypt_file(f, passphrase=self.password)
+            if not decrypted_data.ok:
+                print("Error: Decryption failed.")
+                os._exit(-1)
+
+        # Extract the tar archive to the output path
+        try:
+            with tarfile.open(fileobj=decrypted_data.data, mode='r:gz') as tar:
+                tar.extractall(path=self.output_path)
+        except tarfile.TarError as e:
+            print(f"Error: Failed to extract the tar archive: {e}")
+            os._exit(-1)
