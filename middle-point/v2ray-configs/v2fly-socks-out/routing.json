@@ -11,8 +11,8 @@
         {
             "_comment": "HERE",
             "type": "field",
-            "inboundTag":["${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-in"],
-            "outboundTag":"${V2FLY_WEBSOCKET_IN_TAG_VAR:-shad}-out"
+            "inboundTag":["${V2FLY_SOCKS_IN_TAG_VAR:-shad}-in"],
+            "outboundTag":"${V2FLY_SOCKS_IN_TAG_VAR:-shad}-out"
         }
     ]
 }
