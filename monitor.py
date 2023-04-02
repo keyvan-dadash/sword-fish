@@ -11,7 +11,7 @@ app = FastAPI()
 client = docker.from_env()
 board = ""
 
-@app.get("containers")
+@app.get("/containers")
 async def get_list_of_container():
     list_of_container = client.containers.list(all=True)
     list_of_desire_containers = []
@@ -22,7 +22,7 @@ async def get_list_of_container():
     return list_of_desire_containers
 
 
-@app.post("restart/{container_id}")
+@app.post("/restart/{container_id}")
 async def restart_container_from_id(container_id : str, response: Response):
     try:
         desire_container = client.containers.get(str(container_id))
@@ -32,7 +32,7 @@ async def restart_container_from_id(container_id : str, response: Response):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail=str(e))
         
-@app.get("files/list")
+@app.get("/files/list")
 async def get_list_of_available_configs():
     list_of_files = []
     for file in glob.glob("client-configs/*.json"):
@@ -40,7 +40,7 @@ async def get_list_of_available_configs():
         
     return list_of_files
 
-@app.get("files/{file_name}")
+@app.get("/files/{file_name}")
 async def get_config_file(file_name : str):
     path_of_file = "client-configs/" + file_name
     path = Path(path_of_file)
@@ -49,19 +49,19 @@ async def get_config_file(file_name : str):
     
     return FileResponse(path=path_of_file, filename=file_name)
 
-@app.get("board")
+@app.get("/board")
 async def get_board_content():
     return board
 
 class Content(BaseModel):
     content: str
 
-@app.post("board")
+@app.post("/board")
 async def set_board_content(content : Content):
     global board
     board = content.content
     
-@app.websocket("watch-logs/{container_id}/ws")
+@app.websocket("/watch-logs/{container_id}/ws")
 async def watch_logs(websocket: WebSocket, container_id : str, limit : int = 10):
     await websocket.accept()
     try: 
