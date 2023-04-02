@@ -204,9 +204,10 @@ def copy_content(input_path : str, output_path : str):
     if not Path(input_path).exists():
         return
     for item in glob.glob(input_path + "/*"):
-        pi = Path(input_path + "/" + item)
-        po = Path(output_path + "/" + item)
-        po.mkdir(parents=True, exist_ok=True)
+        pi = Path(item)
+        po = Path(os.path.join(output_path, os.path.basename(item)))
+        pop = Path(output_path)
+        pop.mkdir(parents=True, exist_ok=True)
         if not pi.exists():
             continue
         env_content = pi.read_text()
@@ -225,7 +226,7 @@ def setupb(args):
     ss_env_out = variables["SS_ENV_PATH"]
     copy_content(ss_env_in, ss_env_out)
     
-    nginx_env_in = "./backup" + "/" + variables["NGINX_ENV"].split("/")[0]
+    nginx_env_in = "./backup" + "/" + variables["NGINX_ENV"].split("/")[1]
     nginx_env_out = variables["NGINX_ENV"]
     copy_content(nginx_env_in, nginx_env_out)
     
