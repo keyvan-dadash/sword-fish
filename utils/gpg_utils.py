@@ -1,58 +1,43 @@
 import os
 import tarfile
 import gnupg
+import shutil
+from pathlib import Path
 
 class GPGEncrypt():
     
-    def __init__(self, path_to_data : str, output_path : str, passwd : str):
-        self._passwd = passwd
-        self._out = output_path
-        # Set GPG Home directory
-        self._gpg = gnupg.GPG()
-        # Set GPG Encoding
-        self._gpg.encoding = 'utf-8'
-        # Get dataToEncrypt full path
-        self._dataToEncrypt = path_to_data
-        # Setup tar filename to end with .zip
-        self._tarFile = ("{}.tar".format(self._dataToEncrypt))
-        # Setup encrypted filename to end with .gpg
-        self._encryptedFile = ("{}.tar.gpg".format(self._dataToEncrypt))
+    def __init__(self, input_path, output_path, password):
+        self.input_path = input_path
+        self.password = password
+        self.output_path = output_path
+        self.gpg = gnupg.GPG()
         
     def encrypt(self):
-        self._dataTar()
-        self._encryptFile()
-    
-    def _dataTar(self):
-        if os.path.isfile(self._dataToEncrypt):
-            return
+        # Compress the input path to a tar file
+        if os.path.isfile(self.input_path):
+            base_name = os.path.basename(self.input_path)
+            dir_name = os.path.dirname(self.input_path)
+            tar_path = shutil.make_archive(base_name, 'tar', dir_name, base_name)
+        elif os.path.isdir(self.input_path):
+            tar_path = shutil.make_archive('archive', 'tar', self.input_path)
         else:
-            with tarfile.open(self._tarFile, 'w|') as tar:
-                tar.add(self._dataToEncrypt)
-                tar.close()
-
-    def _encryptFile(self):
-        passphrase = (self._passwd)
-        input = self._gpg.gen_key_input(name_email='user1@test', passphrase=passphrase)
-        fp = self._gpg.gen_key(input).fingerprint
-        if os.path.isfile(self._dataToEncrypt):
-            with open(self._dataToEncrypt, 'rb') as f:
-                status = self._gpg.encrypt_file(f,
-                fp,
+            raise ValueError('Input path is not a file or directory')
+        
+        # Encrypt the tar file with GPG
+        Path(self.output_path).mkdir(parents=True, exist_ok=True)
+        with open(tar_path, 'rb') as f:
+            encrypted_data = self.gpg.encrypt_file(
+                f,
+                recipients=None,
                 symmetric='AES256',
-                passphrase=passphrase,
-                armor=False,
-                output=self._out + ".gpg")
-
-        else:
-            with open(self._tarFile, 'rb') as f:
-                status = self._gpg.encrypt_file(f,
-                fp,
-                symmetric='AES256',
-                passphrase=passphrase,
-                armor=False,
-                output=self._out + ".tar.gpg")
-                
-        os.remove(self._tarFile)
+                passphrase=self.password,
+                output=os.path.join(self.output_path, os.path.basename(tar_path) + '.gpg')
+            )
+        
+        # Delete the tar file
+        os.remove(tar_path)
+        
+        return encrypted_data
         
 class GPGDecryptAndExtract:
     
@@ -71,11 +56,16 @@ class GPGDecryptAndExtract:
             if not decrypted_data.ok:
                 print("Error: Decryption failed.")
                 os._exit(-1)
+                
+        with open("temp.tar", "wb") as f:
+            f.write(decrypted_data.data)
 
         # Extract the tar archive to the output path
         try:
-            with tarfile.open(fileobj=decrypted_data.data, mode='r:gz') as tar:
+            with tarfile.open("temp.tar") as tar:
                 tar.extractall(path=self.output_path)
         except tarfile.TarError as e:
             print(f"Error: Failed to extract the tar archive: {e}")
             os._exit(-1)
+            
+        os.remove("temp.tar")

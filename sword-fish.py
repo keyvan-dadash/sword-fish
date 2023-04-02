@@ -256,7 +256,7 @@ if __name__ == "__main__":
     backup_parser = sub_parsers.add_parser("backup")
     backup_parser.set_defaults(func=backup)
     backup_parser.add_argument('--device', choices=['middle', 'end'], required=True)
-    backup_parser.add_argument('--output', action='store', type=str, required=True)
+    backup_parser.add_argument('--output', action='store', type=str, required=False, default="./")
     backup_parser.add_argument('--passwd', action='store', type=str, required=True)
     
     # setup config subparser
