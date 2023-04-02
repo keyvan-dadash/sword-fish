@@ -5,3 +5,4 @@ utils/__pycache__
 nginx_conf/__pycache__
 __pycache__
 certs
+monitor.pid

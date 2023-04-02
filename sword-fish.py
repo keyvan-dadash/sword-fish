@@ -2,9 +2,12 @@
 
 import argparse
 import json
+import subprocess
 from pathlib import Path
 import glob
 import os
+import uvicorn
+import time
 
 from utils.json_filler import JSONFiller, ProcessedType
 from utils.json_builder import JSONBuilder
@@ -16,6 +19,7 @@ from utils.cast import *
 from nginx_conf.nginx_utils import NGINXConfigBlockBuilder, NGINXParser
 
 from constants import *
+from monitor import *
 
 def setup_callbacks(json_f : JSONFiller):
         c = Callback(GLOBAL_VARS, SPECILIZED_VARS)
@@ -160,6 +164,30 @@ def setup(args):
     v2ray_env_in.remove_env()
     ss_env_in.remove_env()
     nginx_env_in.remove_env()
+    
+    
+def run_monitor_server(args):
+    uvicorn.run(app=app, host=args.host, port=int(args.port), log_level="info")
+    
+    
+def monitor(args):
+    if (not args.start) and (not args.terminate):
+        raise Exception("Eigher start or terminate option should be provided")
+    
+    if args.terminate:
+        path = Path("./monitor.pid")
+        if not path.exists():
+            raise FileNotFoundError
+        
+        pid = path.read_text()
+        os.kill(int(pid), 9)
+    
+    elif args.start:
+        child_pid = os.fork()
+        if child_pid == 0:
+            with open("monitor.pid", "w+") as f:
+                f.write(str(os.getpid()))
+            run_monitor_server(args=args)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Sword fish cli')
@@ -188,11 +216,20 @@ if __name__ == "__main__":
     backup_parser.add_argument('--output', action='store', type=str, required=True)
     backup_parser.add_argument('--passwd', action='store', type=str, required=True)
     
+    # setup config subparser
     setup_parser = sub_parsers.add_parser("setup")
     setup_parser.set_defaults(func=setup)
     setup_parser.add_argument('--device', choices=['middle', 'end'], required=True)
     setup_parser.add_argument('--gen-cert', action='store_true', required=False)
     setup_parser.add_argument('--nginx', action='store_true', required=False)
+    
+    # monitor config subparser
+    monitor_parser = sub_parsers.add_parser("monitor")
+    monitor_parser.set_defaults(func=monitor)
+    monitor_parser.add_argument('--start', action='store_true', required=False)
+    monitor_parser.add_argument('--terminate', action='store_true', required=False)
+    monitor_parser.add_argument('--host', action='store', type=str, required=False, default="127.0.0.1")
+    monitor_parser.add_argument('--port', action='store', type=int, required=False, default=8000)
     
     args = parser.parse_args()
     args.func(args)

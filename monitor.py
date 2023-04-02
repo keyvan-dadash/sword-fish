@@ -5,9 +5,11 @@ import glob
 from pathlib import Path
 from fastapi import FastAPI, WebSocket, HTTPException, Response, status
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 
 app = FastAPI()
 client = docker.from_env()
+board = ""
 
 @app.get("/containers")
 async def get_list_of_container():
@@ -46,6 +48,18 @@ async def get_config_file(file_name : str):
         raise HTTPException(status_code=404, detail="file does not exists")
     
     return FileResponse(path=path_of_file, filename=file_name)
+
+@app.get("/board")
+async def get_board_content():
+    return board
+
+class Content(BaseModel):
+    content: str
+
+@app.get("/board")
+async def set_board_content(content : Content):
+    global board
+    board = content.content
     
 @app.websocket("/watch-logs/{container_id}/ws")
 async def watch_logs(websocket: WebSocket, container_id : str, limit : int = 10):
