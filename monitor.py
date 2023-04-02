@@ -2,6 +2,9 @@
 
 import docker
 import glob
+import asyncio
+from asyncio import Queue
+from threading import Thread, Event
 from pathlib import Path
 from fastapi import FastAPI, WebSocket, HTTPException, Response, status
 from fastapi.responses import FileResponse
@@ -60,17 +63,35 @@ class Content(BaseModel):
 async def set_board_content(content : Content):
     global board
     board = content.content
-    
+
+async def watch_container_log(queue, container, limit, event):
+    container_log = container.logs(follow=True, stream=True, tail=limit)
+    for line in container_log:
+        await queue.put(line.decode())
+        if event.is_set():
+            break
+
+def entrypoint(queue, container, limit, event):
+    asyncio.run(watch_container_log(queue, container, limit, event))
+
 @app.websocket("/watch-logs/{container_id}/ws")
 async def watch_logs(websocket: WebSocket, container_id : str, limit : int = 10):
-    await websocket.accept()
-    try: 
+    watch_log_t = None
+    event = Event()
+    communication_queue = Queue(maxsize=100)
+    try:
+        await websocket.accept()
         desire_container = client.containers.get(str(container_id))
-        container_log = desire_container.logs(follow=True, stream=True, tail=limit)
-        for line in container_log:
-            await websocket.send_text(line)
+        watch_log_t = Thread(target=entrypoint, args=(communication_queue, desire_container, limit, event))
+        watch_log_t.start()
+        while True:
+            log = await communication_queue.get()
+            await websocket.send_text(log)
     except Exception as e:
-        await websocket.send_text({
-            "error": str(e)
-        })
-        await websocket.close()
+        print(e)
+
+    await websocket.close()
+    if watch_log_t:
+        event.set()
+        while (not communication_queue.empty()) and watch_log_t.is_alive():
+            await communication_queue.get()

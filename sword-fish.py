@@ -190,12 +190,14 @@ def monitor(args):
         os.kill(int(pid), 9)
     
     elif args.start:
-        child_pid = os.fork()
-        if child_pid == 0:
-            with open("monitor.pid", "w+") as f:
-                f.write(str(os.getpid()))
+        if not args.watch:
+            child_pid = os.fork()
+            if child_pid == 0:
+                with open("monitor.pid", "w+") as f:
+                    f.write(str(os.getpid()))
+                run_monitor_server(args=args)
+        else:
             run_monitor_server(args=args)
-            
             
 def copy_content(input_path : str, output_path : str):
     if not Path(input_path).exists():
@@ -269,6 +271,7 @@ if __name__ == "__main__":
     monitor_parser.set_defaults(func=monitor)
     monitor_parser.add_argument('--start', action='store_true', required=False)
     monitor_parser.add_argument('--terminate', action='store_true', required=False)
+    monitor_parser.add_argument('--watch', action='store_true', required=False)
     monitor_parser.add_argument('--host', action='store', type=str, required=False, default="127.0.0.1")
     monitor_parser.add_argument('--port', action='store', type=int, required=False, default=8000)
     
