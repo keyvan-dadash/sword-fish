@@ -3,3 +3,4 @@ fastapi==0.95.0
 gnupg==2.3.1
 python_gnupg==0.4.8
 uvicorn==0.21.1
+websockets==10.4

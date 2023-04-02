@@ -68,9 +68,9 @@ async def watch_logs(websocket: WebSocket, container_id : str, limit : int = 10)
         desire_container = client.containers.get(str(container_id))
         container_log = desire_container.logs(follow=True, stream=True, tail=limit)
         for line in container_log:
-            websocket.send_text(line)
+            await websocket.send_text(line)
     except Exception as e:
-        websocket.send_text({
+        await websocket.send_text({
             "error": str(e)
         })
-        websocket.close()
+        await websocket.close()
