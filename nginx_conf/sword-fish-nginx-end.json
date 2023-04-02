@@ -21,7 +21,7 @@
           "server_name": "${WEB_DOMAINS:-domains}"
         },
         {
-          "location /monitor": [
+          "location /monitor/": [
             {
               "auth_basic": "\"Monitor Area\""
             },
