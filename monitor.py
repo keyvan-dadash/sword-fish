@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import docker
+import os
 import glob
 import asyncio
 from asyncio import Queue
@@ -16,10 +17,11 @@ board = ""
 
 @app.get("/containers")
 async def get_list_of_container():
+    # return list of available containers
     list_of_container = client.containers.list(all=True)
     list_of_desire_containers = []
     for container in list_of_container:
-        if "v2fly" in container.name:
+        if "v2fly" in container.name: # only containers which have v2fly in their name
             list_of_desire_containers.append(container.attrs)
             
     return list_of_desire_containers
@@ -27,6 +29,7 @@ async def get_list_of_container():
 
 @app.post("/restart/{container_id}")
 async def restart_container_from_id(container_id : str, response: Response):
+    # restart container with the given ID
     try:
         desire_container = client.containers.get(str(container_id))
         desire_container.restart(timeout=5)
@@ -37,14 +40,16 @@ async def restart_container_from_id(container_id : str, response: Response):
         
 @app.get("/files/list")
 async def get_list_of_available_configs():
+    # return list of client configs name
     list_of_files = []
     for file in glob.glob("client-configs/*.json"):
-        list_of_files.append(file)
+        list_of_files.append(os.path.basename(file))
         
     return list_of_files
 
 @app.get("/files/{file_name}")
 async def get_config_file(file_name : str):
+    # get config file from folder
     path_of_file = "client-configs/" + file_name
     path = Path(path_of_file)
     if not path.exists():
@@ -54,6 +59,7 @@ async def get_config_file(file_name : str):
 
 @app.get("/board")
 async def get_board_content():
+    # get content of the board
     return board
 
 class Content(BaseModel):
@@ -61,10 +67,12 @@ class Content(BaseModel):
 
 @app.post("/board")
 async def set_board_content(content : Content):
+    # set content on the board
     global board
     board = content.content
 
 async def watch_container_log(queue, container, limit, event):
+    # watch logs of the container and put the logs inside the queue
     container_log = container.logs(follow=True, stream=True, tail=limit)
     for line in container_log:
         await queue.put(line.decode())
@@ -72,10 +80,12 @@ async def watch_container_log(queue, container, limit, event):
             break
 
 def entrypoint(queue, container, limit, event):
+    # run the function in async thread
     asyncio.run(watch_container_log(queue, container, limit, event))
 
 @app.websocket("/watch-logs/{container_id}/ws")
 async def watch_logs(websocket: WebSocket, container_id : str, limit : int = 10):
+    # watch logs of container
     watch_log_t = None
     event = Event()
     communication_queue = Queue(maxsize=100)

@@ -22,7 +22,8 @@ from monitor import *
 def setup_callbacks(json_f : JSONFiller):
         c = Callback(GLOBAL_VARS, SPECILIZED_VARS)
         c.setup_callback(json_f)
-        
+
+# structure of a v2ray config
 structure = [
     ("log", setup_callbacks),
     ("inbounds", setup_callbacks),
